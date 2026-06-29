@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/app/.env
+    volumes:
+      - ./backend:/app
+    container_name: fastapi_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - chroma
+    environment:
+      PYTHONPATH: /app
+      DATABASE_URL: postgresql://admin:admin@postgres:5432/veille_db
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+  frontend :
+    build: ./frontend
+    container_name: react_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: veille_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  chroma:
+    image: chromadb/chroma
+    container_name: chroma_db
+    restart: always
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+  
+  scheduler:
+    build: ./scheduler
+    container_name: cron_scheduler
+    restart: always
+    depends_on:
+      - backend
+    volumes:
+      - ./scheduler/crontab:/etc/cron.d/scheduler
+
+volumes:
+  postgres_data:
+  chroma_data:
+  

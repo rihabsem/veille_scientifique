@@ -1,0 +1,10 @@
+fastapi
+sqlalchemy 
+psycopg2-binary
+chromadb
+torch
+transformers
+alembic
+beautifulsoup4
+lxml
+mistralai

@@ -1,0 +1,138 @@
+NCT06667466 | [] | Prospective, Multicenter, Randomized Controlled Trial of Super Pulse Thulium Fiber Laser Combined With Flexible Negative Pressure Suction Sheath Versus Conventional Sheath for the Treatment of Kidney Stones... | []
+------------------------------------------------------------------------------------------
+NCT07043374 | [] | A Mechanistic Study on How Humid and Hot Environment Promotes Urinary Tract Stone Formation Through Influencing Gut Microbiota and Tryptophan Metabolism... | []
+------------------------------------------------------------------------------------------
+NCT07639385 | [] | Fragmentation Vs Dusting Using TFL With FANS for Renal Stones up to 500mm3... | ['Dusting', 'Fragmentation', 'Thulium fiber laser', 'FANS']
+------------------------------------------------------------------------------------------
+NCT07654296 | [] | Multimodal Analgesia Pathway Assessing Role of Suzetrigine for the Reduction of Opioid Use Following Ureteroscopic Surgery... | ['Multimodal Analgesia', 'Postoperative Opioid Consumption', 'ureteroscopy', 'ureteral stents']
+------------------------------------------------------------------------------------------
+NCT04651088 | [] | Evaluation of Multiple Alkalinizing Agents on Urinary Stone Risk Parameters in Stone and Non-stone Formers on a Metabolically Controlled Diet... | []
+------------------------------------------------------------------------------------------
+NCT07620873 | [] | The Effects of Two-Tier Test-Based Virtual Reality Education on Anxiety, Knowledge, Self-Care Ability, and Cognitive Load in Patients Undergoing Urolithiasis Surgery... | ['Virtual Reality', 'Preoperative Education', 'Urolithiasis', 'Anxiety', 'Self-Care Ability', 'Cognitive Load']
+------------------------------------------------------------------------------------------
+NCT04430426 | [] | Heterozygous Individuals for AGXT and Kidney Stones... | ['kidney stone', 'oxalate']
+------------------------------------------------------------------------------------------
+NCT06819111 | [] | Kinetics of Urinary Alkalinization Therapy in Patients With Nephrolithiasis... | ['kidney stone prevention', 'potassium citrate', 'urine alkalization']
+------------------------------------------------------------------------------------------
+NCT07322172 | [None] | Pilot Study of Patient Navigation Intervention to Improve Follow-up Care for Patients With Urinary Stone Disease... | []
+------------------------------------------------------------------------------------------
+NCT07635797 | [] | Effectiveness of Subgingival Instrumentation on Delaying End-stage Renal Disease Among Chronic Kidney Disease Patients: A Non-Randomized Clinical Study... | ['Chronic Kidney Disease', 'Subgingival Instrumentation', 'Periodontitis', 'End Stage Renal Disease', 'Dialysis']
+------------------------------------------------------------------------------------------
+NCT06562881 | [] | Patient Navigation to Improve Surgical Access in Primary Hyperparathyroidism... | ['Parathyroidectomy', 'Barriers and Challenges to Surgical Health Equity']
+------------------------------------------------------------------------------------------
+NCT07655050 | [] | The Combined Effect of Antibiotic Irrigation and Aspiration Ureteral Access Sheath on Infectious Complications in Retrograde Intrarenal Surgery: A Prospective Randomized Factorial Study... | ['Retrograde intrarenal surgery (RIRS), Kidney stone, Gentamicin, Irrigation fluid, Infectious complications, Urinary tract infection, Sepsis']
+------------------------------------------------------------------------------------------
+NCT07613138 | [] | Tart Cherry Citrate Effervescent Tablet for Urate-Lowering Therapy in Participants With Asymptomatic Hyperuricemia: A Study Protocol for a Single-Center, Randomized, Placebo-Controlled Trial... | ['hyperuricemia', 'uric acid', 'tart cherry', 'citrate']
+------------------------------------------------------------------------------------------
+NCT07514351 | [] | Randomized Controlled Trial of Flexible and Navigable Suction (FANS) vs. CVAC Suction Ureteroscope for Medium to Large Stones... | []
+------------------------------------------------------------------------------------------
+NCT07588750 | ['FALQUETOMED LTDA'] | Retrospective Evaluation of Sibutramine-Topiramate Therapy for Obesity in Real-World Outpatient Practice... | ['Obesity', 'Sibutramine', 'Topiramate', 'Real-World Evidence', 'Anti-Obesity Drugs']
+------------------------------------------------------------------------------------------
+NCT07536594 | [] | RELIEF-RC: Relief Efficacy of LIdocaine Versus morphinE For Acute Renal Colic in the Emergency Department... | ['renal colic', 'kidney stones', 'lidocaine', 'opioid use']
+------------------------------------------------------------------------------------------
+NCT06930690 | [] | Dexamethasone for Ureteral STent Symptoms (DUSTS): A Randomized, Double-blinded Controlled Study... | ['Ureteral Stent', 'Nephrolithiasis', 'Ureteral Stent Discomfort', 'Ureteral Stent-Related Symptom']
+------------------------------------------------------------------------------------------
+NCT07607626 | [] | Application of Traditional Chinese Medicine Five-Element Music Therapy Combined With Acupoint Patch Therapy Based on the "Holistic Mind-Body Treatment" Theory in Upper Urinary Tract Calculi Treated With Ureteroscopic Lithotripsy Under Local Anesthesia... | []
+------------------------------------------------------------------------------------------
+NCT06653738 | [] | Randomized Placebo-controlled Trial to Assess Efficacies of EMPAgliflozin and Personalized Dietary Counselling for Kidney STONE Prevention in Patients With Calcium Kidney Stones Acronym: EMPASTONE Trial... | []
+------------------------------------------------------------------------------------------
+NCT07516106 | [] | Prospective Multi-center Study Comparing Pulsed Tm:YAG Laser to Pulse Modulated Holmium Laser in the Treatment of Nephrolithiasis With Flexible And Navigable Ureteric Access Sheath (FANS)... | []
+------------------------------------------------------------------------------------------
+NCT07615452 | [] | Assessment of Renal Parenchymal Damage Following Retrograde Intrarenal Surgery Using Shear-Wave Elastography... | ['Retrograde intrarenal surgery', 'Shear-wave elastography', 'Kidney injury', 'kidney stone']
+------------------------------------------------------------------------------------------
+NCT07559214 | [] | Flexible and Navigable Access Sheath (FANS) VS Direct in Scope Suction (DISS) in Treatment of Renal Stone > 2 cm , Controlled Randomized Trial... | []
+------------------------------------------------------------------------------------------
+NCT07636070 | [] | Multimodal Opioid-Free Anesthesia in RIRS: A Comparison of Dexmedetomidine-Ketamine Combination Versus Conventional Opioid-Based Protocols... | ['Opioid-Free Anesthesia', 'Dexmedetomidine', 'Ketamine', 'Postoperative Analgesia', 'Multimodal Analgesia', 'Laryngeal Mask Airway']
+------------------------------------------------------------------------------------------
+NCT07627503 | [] | Comparative Evaluation of Early Postoperative Complications, Cost-Effectiveness, and Patient-Centered Outcomes Following Supine and Prone Standard Percutaneous Nephrolithotomy (PCNL): A Randomized Controlled Trial... | ['PCNL', 'Percutaneous Nephrolithotomy', 'Kidney Stones', 'Supine PCNL', 'Prone PCNL']
+------------------------------------------------------------------------------------------
+NCT07587021 | [] | A Randomized, Double-blind, Placebo-controlled Study Followed by a Treatment Extension to Evaluate the Efficacy and Safety of YOLT-203 in Children and Adults With Primary Hyperoxaluria Type 1... | ['ph1', 'primary hyperoxaluria Type 1', 'yoltech', 'yolt203', 'primary hyperoxaluria', 'recurrent kidney stones', 'rare kidney stones', 'YOLT-203', 'genetic kidney stones', 'gene editing', 'gene therapy', 'AGXT gene', 'CRISPR-Cas9', 'Alanine Glyoxylate Aminotransferase Gene']
+------------------------------------------------------------------------------------------
+NCT07114250 | [] | Comparative Study Between Spinal Anesthesia Versus General Anesthesia in Patients Undergoing Supine Percutaneous Nephrolithotomy... | ['General Anesthesia', 'Percutaneous nephrolithotomy', 'Spinal Anesthesia', 'Nephrolithiasis']
+------------------------------------------------------------------------------------------
+NCT07541209 | [None] | A Phase 1/2 Open-label First-in-Human Dose-Escalating Safety and Efficacy Study Evaluating Subcutaneous Administration of PTH-IA in Adults and Children With Jansen s Metaphyseal Chondrodysplasia (JMC)... | ['Jansen Type Metaphyseal Chondrodysplasia', 'Parathyroid Hormone 1 Receptor (PTH1R)', 'PTH1R Mutations', 'Parathyroid Hormone-Related Peptide (PTHrP)', 'Parathyroid Hormone Inverse Agonist (PTH-IA)']
+------------------------------------------------------------------------------------------
+NCT07601932 | [] | Optimal Patient Positioning and Strategy for the Treatment of Proximal Ureteral Stones... | []
+------------------------------------------------------------------------------------------
+NCT07617909 | [] | L-Citrulline Versus Tamsulosin for Medical Expulsive Therapy of Distal Ureteral Stones: A Prospective Randomized Study... | ['L-Citrulline', 'Medical Expulsive Therapy', 'Ureteral Stone Passage', 'Tamsulosin']
+------------------------------------------------------------------------------------------
+NCT07623876 | ['FM-BSU REC'] | Comparative Efficacy of Tamsulosin, Intraureteral Aminophylline, and Their Combination in Facilitating Ureteral Access During Retrograde Intrarenal Surgery: A Multicenter Randomized Controlled Trial.... | ['Retrograde intrarenal surgery', 'Tamsulosin', 'Intraureteral aminophylline', 'ureteral access sheath']
+------------------------------------------------------------------------------------------
+NCT07627880 | [] | Impact of Initial Drainage Method on Flexible Ureteroscopy Outcomes in Patients Presenting With Calculous Anuria: A Multicenter Prospective Randomized Controlled Trial... | ['Percutaneous nephrostomy', 'Double-J ureteral stent', 'Retrograde intrarenal surgery']
+------------------------------------------------------------------------------------------
+NCT07101809 | [] | Evaluating the Safety and Effectiveness of Steerable Ureteroscopic Renal Evacuation (SURE) With the CVAC® System Compared to Standard Ureteroscopy With no Suction for the Treatment of Renal Stones: a Prospective, Randomized Trial... | ['ureteroscopy', 'CVAC', 'SURE']
+------------------------------------------------------------------------------------------
+NCT07389226 | [] | The Effect of Apple Cider Vinegar Supplementation on 24-hour Urine Chemistry in Adults... | ['urine specimen collection', 'kidney stones']
+------------------------------------------------------------------------------------------
+NCT07555756 | ['Guangxi science and Technology Department'] | AN INTERNATIONAL MULTICENTER CLINICAL STUDY ON APPLICATION OF UROMED AI DOCTOR BASED ON LARGE LANGUAGE MODELS... | ['UroMed AI Doctor', 'Urology']
+------------------------------------------------------------------------------------------
+NCT07296835 | [] | Surgical Outcomes and Costs in Using the Shenzhen HugeMed 6.3 French Flexible Ureteroscope... | ['hugemed, coast saving, ureteroscopy']
+------------------------------------------------------------------------------------------
+NCT07516535 | [] | The Impact of Suction-Assisted RIRS (DISS Versus FANS) on Postoperative Infection Rate and Stone-Free Rate After Treatment of Medium Sized Renal Stones... | ['Retrograde Intrarenal Surgery', 'Suction-Assisted Retrograde Intrarenal Surgery', 'Medium-Sized Renal Stones', 'Stone-Free Rate', 'Postoperative Infection', 'Urosepsis', 'Flexible Ureteroscopy', 'Holmium Laser Lithotripsy', 'Ureteric Access Sheath', 'Intrarenal Pressure']
+------------------------------------------------------------------------------------------
+NCT07510178 | [] | Role Of Retrograde Intrarenal Surgery Versus Extracorporeal Shockwave Lithotripsy In Lower Calyceal Calculi... | ['renal stone', 'lithotripsy', 'retrograde']
+------------------------------------------------------------------------------------------
+NCT07643324 | [] | Comparison of Normal Ventilation and Low Tidal Volume Ventilation During Retrograde Intrarenal Surgery (RIRS) Using Video-Based Motion Index: A Randomized Controlled Trial... | ['General anesthesia', 'Retrograde intrarenal surgery', 'Low tidal volume ventilation', 'Video-based image analysis', 'Endoscopic visualization quality']
+------------------------------------------------------------------------------------------
+NCT07072598 | [] | Comparing Efficiency and Stone-Free Rates After Mini-Percutaneous Nephrolithotomy and Flexible Ureteroscopy With Suction Access Sheaths... | ['kidney stone', 'Ureteroscopy', 'Mini-PCNL', 'ClearPETRA', 'kidney stone interventional treatment', 'kidney stone 1cm-3cm']
+------------------------------------------------------------------------------------------
+NCT07568990 | [] | The Impact of Two Different Ureteral Access Sheaths on Success and Complications in Endoscopic Kidney Stone Surgery... | ['retrograd intrarenal surgery', 'kidney stone', 'kidney']
+------------------------------------------------------------------------------------------
+NCT07535281 | ['Kangdong Sacred Heart Hospital Fund'] | Effect of Complete Suction-Induced Collapse of the Renal Collecting System at the End of Retrograde Intrarenal Surgery on Early Postoperative Outcomes: A Prospective Randomized Study... | ['retrograde intrarenal surgery', 'ureteral access sheath', 'suction', 'postoperative pain', 'infectious complications', 'renal collecting system']
+------------------------------------------------------------------------------------------
+NCT07617948 | [] | Intravesical Aminophylline-Assisted Urgent Retrograde Ureteral Stenting for Acute Calculous Anuria: A Prospective Randomized Controlled Trial... | ['Intravesical aminophylline', 'Retrograde ureteral stenting', 'Acute calculous anuria', 'Emergency urinary drainage', 'Double-J stent']
+------------------------------------------------------------------------------------------
+NCT07435844 | [] | Objective Assessment of the Effect of Comprehensive Spa Care on Patients With Chronic Kidney and Urological Diseases: A Prospective Interventional Clinical Study... | ['Balneotherapy', 'Spa Treatment', 'Mineral Water Drinking Cure', 'Mariánské Lázně', 'Nephrology', 'Urology', 'comprehensive spa care']
+------------------------------------------------------------------------------------------
+NCT07465367 | [] | Assessment of L-methionine Supplementation on Urinary pH in Calcium Phosphate Stone Formers... | []
+------------------------------------------------------------------------------------------
+NCT07457983 | [] | Perioperative Efficacy of Erector Spinae Plane Block in Patients Undergoing Percutaneous Nephrolithotomy... | ['Percutaneous Nephrolithotomy', 'Erector spinae plane block', 'Opioid consumption', 'Numerical pain scores (NRS)', 'Recovery quality (QoR-15T)']
+------------------------------------------------------------------------------------------
+NCT07184866 | ['Institute of Liver and Biliary Sciences'] | A Randomized Controlled Trial Open Label Evaluating the Efficacy of Vitamin C in Improving Outcomes of Acute Kidney Injury in Patients With ACLF With Septic Shock... | ['Sepsis, septic shock, Alcohol-related, ACLF, AKI, Lactate, Vitamin']
+------------------------------------------------------------------------------------------
+NCT07512297 | [] | Comparative Evaluation of Non-Opioid Analgesics for Pain Control During Extracorporeal Shock Wave Lithotripsy: A Prospective Randomized Controlled Trial... | ['ESWL', 'pain', 'Analgesia']
+------------------------------------------------------------------------------------------
+NCT07155005 | [] | Evaluating the Safety and Effectiveness of Steerable Ureteroscopic Renal Evacuation (SURE) With the CVAC® System Compared to Other Therapeutic Interventions for the Treatment of Renal Stones: a Prospective, Observational Trial... | ['ureteroscopy', 'CVAC', 'SURE', 'URS']
+------------------------------------------------------------------------------------------
+NCT07463157 | [] | Comparative Study on the Efficacy of the Ureteral Access Sheath With Integrated Suction FANS Versus the Standard Sheath in Patients With Renal Calculi Undergoing Ureterorenoscopy and Laser Lithotripsy: a Prospective, Randomized, Interventional, Single-center Study... | ['Renal calculi', 'Kidney stones', 'Ureterorenoscopy', 'Laser lithotripsy', 'Ureteral access sheath', 'FANS device']
+------------------------------------------------------------------------------------------
+NCT07393178 | [] | High Pulse Power vs. Low Pulse Power Holmium: YAG Laser in Mini-Percutaneous Nephrolithotomy for Management of Renal Stones > 20 mm: A Randomized Controlled Trial... | ['mini-PCNL', 'holmium-YAG', 'laser lithotripsy']
+------------------------------------------------------------------------------------------
+NCT07492147 | [] | Impact of Negative Pressure Suction on Irrigation Fluid Absorption and Postoperative Infection Risk During Flexible Ureteroscopic Lithotripsy: A Prospective Cohort Study... | []
+------------------------------------------------------------------------------------------
+NCT07393711 | ['Marat Ospanov Medical University'] | Evaluation of the Effectiveness of Intrarenal Dioxidine Metaphylaxis for Preventing Recurrence of Infection Stones After Percutaneous Nephrolithotripsy... | ['Percutaneous nephrolithotomy', 'PCNL', 'Infection stones', 'Struvite stones', 'Dioxidine', 'Intrarenal instillation', 'Stone recurrence', 'Metaphylaxis']
+------------------------------------------------------------------------------------------
+NCT07411391 | ['The Joint CUHK-NTEC CREC'] | A Feasibility Trial of a Novel Robotic System for Retrograde Intrarenal Surgery... | ['Renal stone', 'Urolithiasis', 'RIRS', 'Flexible URS', 'Supervised autonomy']
+------------------------------------------------------------------------------------------
+NCT07075393 | [] | Description of Renal Involvement in Wilson's Disease... | []
+------------------------------------------------------------------------------------------
+NCT07388914 | [] | Aldosterone Variations in Patients With Primary Hyperparathyroidism Before Surgery and in the Year Following Surgery for Parathyroid Disease.... | ['aldosteron', 'primary hyperparathyrodism', 'hypertension']
+------------------------------------------------------------------------------------------
+NCT07408076 | ['University of California, Los Angeles IRB'] | Sodium Bicarbonate as an Alternative to Potassium Citrate for Kidney Stones... | ['kidney stone', 'stone', 'calcium oxalate', 'calcium phosphate', 'potassium citrate', 'sodium bicarbonate', 'nephrolithiasis']
+------------------------------------------------------------------------------------------
+NCT07360353 | [] | A Comparative Study of Performance and Cost-effectiveness of Three Different Single-Use Flexible Ureteroscopes in the Management of Renal Stones: A Randomized Clinical Trial... | ['Flexible ureteroscopy', 'Single-use flexible ureteroscope', 'Renal stones']
+------------------------------------------------------------------------------------------
+NCT07223580 | [] | Evaluating The Role Of Corticosteroids In Post-Ureteroscopy Recovery For Urinary Calculi... | []
+------------------------------------------------------------------------------------------
+NCT07323082 | [] | Role of Purinergic Compounds in the Vascular Pathology of Pseudoxanthoma Elasticum... | ['ppi', 'ADO', 'vascular pathology']
+------------------------------------------------------------------------------------------
+NCT07378904 | [] | Intradermal Sterile Water Injection Versus Intravenous Morphine for Renal Colic: A Randomized Controlled Trial... | ['Renal Colic', 'Urinary Stones', 'Intradermal Sterile Water Injection', 'Intravenous Morphine', 'Pain Management']
+------------------------------------------------------------------------------------------
+NCT07342361 | [] | Using Bendable Tip-suction Ureteral Access Sheath Compared to Conventional Sheath in Managing Renal Staghorn Stones A Randomized Prospective Study... | ['staghorn calculi', 'retrograde intrarenal surgery', 'Ureteral access sheath', 'Suction']
+------------------------------------------------------------------------------------------
+NCT07359391 | ['Faculty of Medicine, Zagazig University, Egypt'] | Dual Approach External Oblique Fascial Plane Block Versus Erector Spinae Plane Block for Post Operative Analgesia in Percutaneous Nephrolithotomy... | ['Percutaneous Nephrolithotomy', 'Postoperative Analgesia', 'Dual Approach External Oblique Fascial Plane Block', 'Erector Spinae Plane Block', 'Pain Management']
+------------------------------------------------------------------------------------------
+NCT07334236 | [] | Energy Ramping Versus Fixed Dose ESWL on Stone-Free Rate (Comparative Study)... | []
+------------------------------------------------------------------------------------------
+NCT07322471 | [] | Efficacy and Safety of Flexible Ureteroscopy Versus Percutaneous Nephrolithotomy in Management of Staghorn Stones: A Randomized Controlled Trial... | ['PCNL', 'RIRS', 'staghorn stone', 'renal stone']
+------------------------------------------------------------------------------------------
+NCT07310966 | [] | Comparison of Lithotomy Versus Lateral Position in Retrograde Intrarenal Surgery for Lower Calyceal Stones Less Than 2 cm: A Randomized Controlled Trial... | ['lithotomy position', 'lateral position', 'lower calyx', 'FURS', 'RIRS']
+------------------------------------------------------------------------------------------
+NCT07316660 | [] | Palmitoylethanolamide Versus Ibuprofen for Acute Postoperative Pain After Extracorporeal Shock Wave Lithotripsy: A Randomized Trial... | []
+------------------------------------------------------------------------------------------
+NCT06813274 | [] | Multicenter, Double Blind, Randomized, Placebo-controlled Trial to Exploring the Role of Eye-Brain Multimodal Imaging in Diagnosing and Treating Neurovascular Coupling Impairment in Diabetes Mellitus... | ['Eye-Brain Multimodal Imaging', 'Neurovascular Coupling Impairment', 'Diabetes Mellitus', 'Diabetic retinopathy', 'Diabetic Cognitive Impairment', 'Traditional Chinese Medicine']
+------------------------------------------------------------------------------------------
+NCT07299357 | [] | Prospective Observational Trial of Image-guided Ablative STereotactic bOdy Radiation Therapy for Primary kidNey Cancer: the STONE Trial... | ['renal cancer', 'stereotactic body radiotherapy', 'radiotherapy', 'cancer treatment', 'renal cancer treatment', 'surgery']
+------------------------------------------------------------------------------------------
+NCT07295860 | ['Faculty of medicine, Mansoura University'] | A Multicenter Randomized Trial Comparing FANS-Based Flexible Ureteroscopy Versus Suction Mini-Percutaneous Nephrolithotomy for Renal Stones 2-3 cm. The National Innovative Large Egyptian (NILE) Stone Study.... | ['Renal stones', 'Nephrolithiasis', 'Urolithiasis', 'RIRS', 'FANS', 'mini-PCNL', 'Suction technology', 'Stone-free rate']
+------------------------------------------------------------------------------------------

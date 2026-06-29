@@ -1,0 +1,1 @@
+* * * * * curl http://backend:8000/run-coordinateur >> /tmp/cron.log 2>&1
