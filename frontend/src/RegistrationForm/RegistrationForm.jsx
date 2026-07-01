@@ -19,30 +19,8 @@ function RegistrationForm(){
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const response = await fetch(
-                "http://localhost:8000/users/register",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(form)
-                }
-            );
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("Registration successful!");
-                console.log(data);
-            } else {
-                alert(data.detail);
-            }
-
-        } catch (err) {
-            console.error(err);
-        }
-
+        console.log("Registration attempted");
+        
         };
     return (
 

@@ -4,6 +4,7 @@ from app.models.keywords import Keyword
 from app.models.query import Query
 from app.database import SessionLocal
 import json
+
 db=SessionLocal()
 def insert_article(id, title, abstract, id_user, source):
     existing_article = db.query(Article).filter(Article.id == id).first()
@@ -122,12 +123,12 @@ def get_articles(id_lists, user_id):
     json_list = json.dumps(list)
     return json_list
 
-def get_user(id):
+def get_user(email):
     query = db.query(User).filter(
-        User.id == id
+        User.email == email
     ).first()
     if query :
-        return id
+        return query
     else:
         return None
 
