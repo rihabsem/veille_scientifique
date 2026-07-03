@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "./api";
 
 export default function Login() {
@@ -6,6 +7,7 @@ export default function Login() {
         email: "",
         password: ""
     });
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -17,10 +19,11 @@ export default function Login() {
             "token",
             response.data.access_token
         );
-        window.location.href = "/dashboard";
+        // window.location.href = "/dashboard";
+        navigate("/dashboard");
     } catch (err) {
 
-        alert(err);
+        alert(err.response?.data?.detail || err.message);
 
     }
 };
