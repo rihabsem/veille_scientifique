@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
-from app.model import get_user,insert_user
-from app.auth import create_access_token
+from fastapi import FastAPI, HTTPException, Depends
+from app.model import get_user,insert_user,get_user_by_id
+from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
+from app.user_query import profile_refinement
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
@@ -106,5 +107,15 @@ def register(data: RegisterRequest):
     )
 
     return {"status": "ok"}
+
+@app.get("/questions")
+def get_me(user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    response_json = profile_refinement(user.profil)
+    return response_json
+
+    
 
     

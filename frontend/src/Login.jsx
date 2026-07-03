@@ -20,7 +20,7 @@ export default function Login() {
             response.data.access_token
         );
         // window.location.href = "/dashboard";
-        navigate("/dashboard");
+        navigate("/questions");
     } catch (err) {
 
         alert(err.response?.data?.detail || err.message);

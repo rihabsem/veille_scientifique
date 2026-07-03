@@ -57,7 +57,10 @@ def profile_refinement(user_profile):
           {"role":"user", "content":query}
       ],
   )
-  return response.choices[0].message.content
+  questions = response.choices[0].message.content
+  questions = re.sub(r"```json|```","",questions).strip()
+  questions = json.loads(questions)
+  return questions
 
 def  query_generation(user_profile, user_answers):
   query = f"""
@@ -191,8 +194,9 @@ if __name__ == "__main__":
    I regularly follow scientific publications related to CKD, acute kidney injury, renal replacement therapies, and cardiovascular complications associated with kidney disease. I am also interested in novel biomarkers, precision medicine approaches, and clinical trials evaluating new treatments for kidney disorders.
    My goal is to stay informed about emerging AI techniques applied to nephrology, recent clinical trials, validation studies of predictive models, and advances in patient monitoring technologies. I would like my literature monitoring system to prioritize high-quality clinical studies, systematic reviews, meta-analyses, and research published in leading medical and AI journals."""
   
-  user_profile_treatment(user_profile,1)
-# #   # response = profile_refinement(user_profile)
+  #user_profile_treatment(user_profile,1)
+  response = profile_refinement(user_profile)
+  print(response)
 # #   # questions = response.choices[0].message.content
 #   responses = []
 
