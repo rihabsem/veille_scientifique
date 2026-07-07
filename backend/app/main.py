@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Depends
-from app.model import get_user,insert_user,get_user_by_id
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
-from app.user_query import profile_refinement
+from app.user_query import profile_refinement, launch_LLM
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
@@ -27,6 +27,11 @@ class RegisterRequest(BaseModel):
     email : str
     password : str
     update_rate : str
+
+class SetResultsRequest(BaseModel):
+    question1: str
+    question2: str
+    question3: str
 
 @app.get("/chroma-db")
 def test():
@@ -115,6 +120,24 @@ def get_me(user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
     response_json = profile_refinement(user.profil)
     return response_json
+
+@app.post("/set-results")
+def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    profile = get_user_profile(user_id)
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Profil introuvable")
+    answers = [data.question1, data.question2, data.question3]
+    print("profile =", profile)
+    print("type(profile) =", type(profile))
+    print("profile[0] =", profile[0])
+    try:
+        launch_LLM(profile[0], user_id, answers)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
+
 
     
 

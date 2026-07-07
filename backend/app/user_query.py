@@ -170,17 +170,11 @@ def user_profile_treatment(user_profile, user_id):
 
 
 
-def launch_LLM(user_profile, id_user):
-  responses=[]
-  user_profile = profile_refinement(user_profile)
-  questions = re.sub(r"```json|```","",questions).strip()
-  questions = json.loads(questions)
-  for question in questions:
-    print(question)
-    response = input("")
-    responses.append(response)
+def launch_LLM(user_profile, id_user, responses):
   res = query_generation(user_profile, responses)
   res = re.sub(r"```json|```","",res).strip()
+  res = json.loads(res)
+  print(res)
   for r in res:
     insert_query(r["semantic_scholar"], "Semantic Scholar", id_user)
     insert_query(r["pubmed"], "PubMed", id_user)

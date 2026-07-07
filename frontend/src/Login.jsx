@@ -8,8 +8,21 @@ export default function Login() {
         password: ""
     });
     const navigate = useNavigate();
+    const isValidEmail = (email) => {
+        const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+@ulb.be$/
+        return emailRegex.test(email);
+    }
     const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.email.trim() || !form.password.trim()) {
+            alert("Veuillez remplir tous les champs.");
+            return;
+        }
+    if (!isValidEmail(form.email)) {
+        alert("Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)");
+        return;
+    }
+
 
     try {
 
@@ -19,8 +32,7 @@ export default function Login() {
             "token",
             response.data.access_token
         );
-        // window.location.href = "/dashboard";
-        navigate("/questions");
+        navigate("/dashboard");
     } catch (err) {
 
         alert(err.response?.data?.detail || err.message);
@@ -33,7 +45,8 @@ export default function Login() {
       <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}/><br/>
       <label>Password:</label><br/> 
       <input type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}/><br/>
-      <button type="submit">Login</button>
+      <button type="submit">Login</button><br/>
+      <a href="/register">S'inscrire</a>
     </form>
   );
 

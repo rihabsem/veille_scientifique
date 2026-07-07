@@ -10,19 +10,40 @@ const Register = () => {
     profile:"",
     update_rate:""
   });
+
   const navigate = useNavigate();
+      const isValidEmail = (email) => {
+        const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+@ulb.be$/
+        return emailRegex.test(email);
+    }
+    
   const handleSubmit = async(e) => {
     e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.password.trim() || !form.profile.trim() || !form.update_rate.trim()) {
+      alert("Veuillez remplir tous les champs.");
+      return;
+    }
+    if (!isValidEmail(form.email)) {
+        alert("Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)");
+        return;
+    }
     try{
-      const response = await API.post("/register", form);
+      await API.post("/register", form);
 
-      navigate("/");
+      // Login automatique juste après l'inscription pour récupérer un token
+      const loginResponse = await API.post("/login", {
+        email: form.email,
+        password: form.password
+      });
+      localStorage.setItem("token", loginResponse.data.access_token);
+      alert("token : " + loginResponse.data.access_token);
+      navigate("/questions");
     }
     catch(err){
-      console.log(err.response?.data);  // <-- le détail exact ici
+      console.log(err.response?.data);
       alert(err.response?.data?.detail || err.message);
     }
-  }
+}
   return(
     <form onSubmit={handleSubmit}>
       <label>Nom:</label><br/>
