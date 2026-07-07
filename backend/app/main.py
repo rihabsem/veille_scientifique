@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException, Depends
-from app.model import get_user,insert_user,get_user_by_id, get_user_profile
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
+from app.coordinateur import run
+from app.data_cleaning import clean_data, get_embedding
+from app.vector_db_creation import store_user_in_db
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
@@ -26,6 +29,7 @@ class RegisterRequest(BaseModel):
     name: str
     email : str
     password : str
+    profile : str
     update_rate : str
 
 class SetResultsRequest(BaseModel):
@@ -102,14 +106,19 @@ def register(data: RegisterRequest):
     date_next = date + timedelta(days=days)
     date_next_string = re.sub(r"\d{2}:\d{2}:\d{2}\.\d+", "", str(date_next)).strip()
     hashed_password = hash_password(data.password)
-    insert_user(
+    user = insert_user(
+        name=data.name,
         email=data.email,
         hashed_password=hashed_password,
-        profil=data.name,
+        profil=data.profile,
         last_updated_date=date_string,
         next_updated_date=date_next_string,
         weekly_monthly=data.update_rate
     )
+    cleaned_data = clean_data(data.profile)
+    embedding = get_embedding(cleaned_data)
+    store_user_in_db(user, embedding)
+
 
     return {"status": "ok"}
 
@@ -137,6 +146,19 @@ def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user
         launch_LLM(profile[0], user_id, answers)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
+    
+@app.get("/dashaboard-data")
+def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    result = run(user_id)
+    if (result is None):
+        raise HTTPException(status_code=404, detail="Pas de mise à jour nécessaire")
+    results = get_articles(result, user_id)
+    print(f"results = {results}")
+    return results
+    
 
 
     

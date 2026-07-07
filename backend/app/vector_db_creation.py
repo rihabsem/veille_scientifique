@@ -63,7 +63,16 @@ def search_user_embedding(user_id):
         include=["embeddings"]
     )
 
-    return result["embeddings"][0]
+    embeddings = result["embeddings"]
+
+    if embeddings is None or len(embeddings) == 0:
+        return None
+
+    if embeddings[0] is None:
+        return None
+
+    return embeddings[0]
+
 
 def search_articles_for_user(user_id, k=10):
     user_embedding = search_user_embedding(str(user_id))
@@ -78,7 +87,7 @@ def search_articles_for_user(user_id, k=10):
         n_results=k,
         where={"user_id": user_id}
     )
-    print(results["ids"][0])
+    return (results["ids"][0])
 
 def delete_old_articles(user_id):
     collection = get_articles_collection()
@@ -91,11 +100,3 @@ def delete_old_articles(user_id):
         print(f"Problem deleting articles for user {user_id} : {e}")
 
 
-if __name__ == "__main__":
-    collection = get_articles_collection()
-
-    result = collection.get(
-        include=["embeddings", "metadatas"]
-    )
-
-    print(result["embeddings"])

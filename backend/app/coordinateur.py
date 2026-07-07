@@ -11,11 +11,10 @@ from datetime import datetime, timedelta
 import re
 
 
-def run():
+def run(id):
     print("coordinateur on")
     queries = []
     db = SessionLocal()
-    id = 1
     user = db.query(User).filter(User.id == id).first()
     date = datetime.now()
     date_string = re.sub("[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]+", "",str(date)).strip()
@@ -46,6 +45,7 @@ def run():
             user_last_updated_date = str(date.strftime("%Y-%m-%d"))
             user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
             update_user_date(id,user_next_updated_date, user_last_updated_date)
+            return resultats
 
 
 
@@ -85,6 +85,9 @@ def run():
             user_last_updated_date = str(date.strftime("%Y-%m-%d"))
             user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
             update_user_date(id,user_next_updated_date, user_last_updated_date)
+            return resultats
+        else:
+            return None
 
 
 if __name__ == "__main__":

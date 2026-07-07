@@ -67,21 +67,22 @@ def insert_keywords(keywords, article_id):
         db.close()
 
 
-def insert_user(email, hashed_password, profil, weekly_monthly, last_updated_date, next_updated_date):
+def insert_user(name, email, hashed_password, profil, last_updated_date, next_updated_date, weekly_monthly):
     db = SessionLocal()
     try:
-        db.add(User(
+        new_user = User(
+            nom=name,
             email=email,
             hashed_password=hashed_password,
             profil=profil,
             last_updated_date=last_updated_date,
             next_updated_date=next_updated_date,
             weekly_monthly=weekly_monthly
-        ))
+        )
+        db.add(new_user)
         db.commit()
-    except Exception:
-        db.rollback()
-        raise
+        db.refresh(new_user)  # recharge l'objet depuis la DB pour récupérer l'id auto-généré
+        return new_user.id
     finally:
         db.close()
 
@@ -131,8 +132,8 @@ def get_articles(id_lists, user_id):
                 Article.id_user == user_id
             ).first()
             if articles:
-                result.append({"title": articles.title, "abstract": articles.abstract})
-        return json.dumps(result)
+                result.append({"id": articles.id, "title": articles.title, "abstract": articles.abstract, "source": articles.source})
+        return result
     finally:
         db.close()
 

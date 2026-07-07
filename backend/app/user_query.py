@@ -136,6 +136,7 @@ def  query_generation(user_profile, user_answers):
   - In JSON values, use single quotes '' instead of double quotes \"\"
   - Do not use markdown.
   - Do not wrap the output in ```json.
+  - You MUST reply with the same language as the input.
 
 Each element must be a dictionary with the following structure:
 

@@ -122,7 +122,7 @@ def handle_result_pubmed(results, user_id):
         cleaned_data = clean_data(data)
         embedding = get_embedding(cleaned_data)
         store_embedding_in_db(pmid_tag, embedding, user_id)
-        insert_article(pmid_tag, title, abstract, 1, "PubMed")
+        insert_article(pmid_tag, title, abstract, user_id, "PubMed")
         insert_keywords_PubMed(keywords, pmid_tag)
         print(pmid_tag)
         
@@ -191,7 +191,7 @@ def handle_result_semantic_scholar(source, user_id):
         cleaned_data = clean_data(data)
         embedding = get_embedding(cleaned_data)
         store_embedding_in_db(id, embedding, user_id)
-        insert_article(id, title, abstract, 1, "Semantic Scholar")
+        insert_article(id, title, abstract, user_id, "Semantic Scholar")
         print(id)
 
 
@@ -277,7 +277,7 @@ def handle_response_clinical_trials(result,user_id):
         cleaned_data = clean_data(text_to_embed)
         embedding = get_embedding(cleaned_data)
         store_embedding_in_db(study_id, embedding, user_id)
-        insert_article(study_id, title, description, 1, "ClinicalTrials")
+        insert_article(study_id, title, description, user_id, "ClinicalTrials")
         insert_keywords(keyword_list, study_id)
 # def handle_response_clinical_trials(result, output_file="clinical_trials_results.txt"):
 #     results = result["studies"]
@@ -316,56 +316,6 @@ def handle_response_clinical_trials(result,user_id):
 #StartDate
 #l'api clinical trials accepte des phrases simple pour décrire la recherche en utilisant le parametre query.term
 #dans le parametre query.terme on peut ajouter une condition sur la date par AREA[start date]RANGE[MIN_DATE,MAX_DATE] --> la variable start date prend les valeurs dans l'intervalle MIN_DATE et MAX_DATE
-
-
-
-
-if __name__ == "__main__":
-    query = "chronic kidney disease + diabetic nephropathy + hypertensive nephropathy + machine learning + predictive modeling + electronic health records"
-    min_date = "2026-05-24"
-    max_date = "2026-06-26"
-    # result = clinical_trials_search("cancer", "2026-05-25", "2026-06-26")
-    # print(result)
-    # pmids = pubmed_search(query, "2020/01/01", "2022/12/31")
-    # print(pmids)
-    # time.sleep(1) # to respect the rate limit of 3 requests per second
-    # fetch_response = pubmed_fetch(pmids)
-    # handle_result_pubmed(fetch_response.text)
-
-    
-
-
-    response = semantic_scholar_search(query, min_date, max_date)
-    handle_result_semantic_scholar(response.json(),1)
-    # with open("semantic_scholar_response.json", "w") as f:
-    #         f.write(response)
-
-
-    
-    # url = "https://clinicaltrials.gov/api/v2/studies"
-    # query = 'machine learning drug discovery'
-    # response = clinical_trials_search(query, "2020-01-01", "2020-12-31")
-
-    # params = {
-    # "query.term": query,
-    # "sort": "StartDate:desc",
-    # "pageSize": 100
-    # }
-
-    # pmids = pubmed_search(query, "2020/01/01", "2022/12/31")
-    # print(pmids)
-    # time.sleep(1) # to respect the rate limit of 3 requests per second
-    # fetch_response = pubmed_fetch(pmids)
-    # handle_result_pubmed(fetch_response.text)
-    # response = semantic_scholar_search("cancer", "2020-01-01", "2020-12-31")
-    # handle_result_semantic_scholar(response)
-    # response = clinical_trials_search(query, "2026-01-01", "2026-12-31")
-    # handle_response_clinical_trials(response,1)
-
-
-
-
-
 
 
 
