@@ -4,6 +4,8 @@ from app.models.keywords import Keyword
 from app.models.query import Query
 from app.database import SessionLocal
 import json
+from datetime import datetime, timedelta
+import re
 
 
 def insert_article(id, title, abstract, id_user, source):
@@ -158,3 +160,24 @@ def get_user_profile(user_id):
         return db.query(User.profil).filter(User.id == user_id).first()
     finally:
         db.close()
+
+def get_user_by_date(next_update_date):
+    db = SessionLocal()
+    try:
+        return db.query(User).filter(User.next_updated_date == next_update_date).all()
+    finally:
+        db.close()
+
+def get_articles_by_date(user_id, last_updated_date, next_updated_date):
+    db = SessionLocal()
+    try:
+        return db.query(Article).join(
+            User, Article.id_user == User.id
+        ).filter(
+            User.id == user_id,
+            User.last_updated_date == last_updated_date,
+            User.next_updated_date == next_updated_date
+        ).all()
+    finally:
+        db.close()
+

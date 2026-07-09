@@ -1,11 +1,9 @@
 from app.database import SessionLocal
 from app.models.users import User
-from app.models.articles import Article
-from app.models.keywords import Keyword
 from app.models.query import Query
 from app.api_logic import pubmed_search, pubmed_fetch, semantic_scholar_search, clinical_trials_search, handle_response_clinical_trials, handle_result_pubmed, handle_result_semantic_scholar
 from app.vector_db_creation import delete_old_articles, search_articles_for_user
-from app.model import update_user_date
+from app.model import update_user_date, get_user_by_date
 import time
 from datetime import datetime, timedelta
 import re

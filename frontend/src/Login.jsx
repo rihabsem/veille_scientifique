@@ -18,10 +18,10 @@ export default function Login() {
             alert("Veuillez remplir tous les champs.");
             return;
         }
-    if (!isValidEmail(form.email)) {
-        alert("Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)");
-        return;
-    }
+    // if (!isValidEmail(form.email)) {
+    //     alert("Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)");
+    //     return;
+    // }
 
 
     try {

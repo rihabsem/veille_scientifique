@@ -1,19 +1,36 @@
 from fastapi import FastAPI, HTTPException, Depends
-from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, get_articles_by_date
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
-from app.coordinateur import run
+from app.coord import run_batch
 from app.data_cleaning import clean_data, get_embedding
-from app.vector_db_creation import store_user_in_db
+from app.vector_db_creation import store_user_in_db, search_articles_for_user
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
 from datetime import datetime, timedelta
 import re
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+from contextlib import asynccontextmanager
+from zoneinfo import ZoneInfo
 
+scheduler = BackgroundScheduler()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler.add_job(
+        run_batch,
+        trigger=CronTrigger(hour=10, minute=5, timezone=ZoneInfo("Europe/Brussels")),
+        id="daily_coordinateur",
+        replace_existing=True
+    )
+    scheduler.start()
+    yield
+    scheduler.shutdown()
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex="http://localhost:5173",
@@ -146,19 +163,20 @@ def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user
         launch_LLM(profile[0], user_id, answers)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
-    
-@app.get("/dashaboard-data")
+
+
+@app.get("/dashboard-data")
 def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
-    result = run(user_id)
-    if (result is None):
-        raise HTTPException(status_code=404, detail="Pas de mise à jour nécessaire")
-    results = get_articles(result, user_id)
-    print(f"results = {results}")
+
+    article_ids = search_articles_for_user(user_id)
+    if article_ids is None or len(article_ids) == 0:
+        raise HTTPException(status_code=404, detail="Pas encore de résultats disponibles")
+
+    results = get_articles(article_ids, user_id)
     return results
-    
 
 
     

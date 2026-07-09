@@ -34,7 +34,9 @@ def profile_refinement(user_profile):
   - Are you more interested in diagnosis, treatment, or disease mechanisms?
 
   - Do NOT generate advanced scientific or research-review style questions
-  - Do NOT include deep academic analysis
+  - Do NOT ask questions that require specialized scientific knowledge to answer (e.g. choosing between specific mechanisms, pathophysiological pathways, or methodological approaches)
+  - Do NOT ask yes/no questions about whether to "include" a specific narrow subtopic (e.g. "Do you want to include clinical trials on X?")
+  - Do NOOT ask the user if they are interested in recent or old literature, or if they want to focus on specific study types (e.g. clinical trials, meta-analyses, case reports)
 
   - Questions must NOT include:
     - tools or platforms (PubMed, ClinicalTrials, Google Scholar, etc.)
@@ -125,6 +127,7 @@ def  query_generation(user_profile, user_answers):
   - Avoid duplicate or nearly identical queries.
   - Balance specificity and coverage.
   - Do not explain your reasoning.
+  - Do not give keywords consistent of one word only, except for acronyms or abbreviations.
 
   OUTPUT FORMAT:
   Return ONLY a JSON array.
@@ -133,7 +136,7 @@ def  query_generation(user_profile, user_answers):
   IMPORTANT:
   - Return valid JSON only.
   - Every value must be a JSON string.
-  - In JSON values, use single quotes '' instead of double quotes \"\"
+  - Return valid, standard JSON with double quotes for all keys and string values
   - Do not use markdown.
   - Do not wrap the output in ```json.
   - You MUST reply with the same language as the input.
@@ -185,34 +188,19 @@ def launch_LLM(user_profile, id_user, responses):
 
 if __name__ == "__main__":
   responses=[]
-  user_profile = """I am a clinical researcher and biomedical engineer working in the field of chronic kidney disease (CKD) and artificial intelligence. My research focuses on developing machine learning models to predict disease progression, identify patients at risk of complications, and support clinical decision-making. I am particularly interested in studies involving electronic health records, predictive analytics, explainable AI, and risk stratification in nephrology.
-   I regularly follow scientific publications related to CKD, acute kidney injury, renal replacement therapies, and cardiovascular complications associated with kidney disease. I am also interested in novel biomarkers, precision medicine approaches, and clinical trials evaluating new treatments for kidney disorders.
-   My goal is to stay informed about emerging AI techniques applied to nephrology, recent clinical trials, validation studies of predictive models, and advances in patient monitoring technologies. I would like my literature monitoring system to prioritize high-quality clinical studies, systematic reviews, meta-analyses, and research published in leading medical and AI journals."""
+  user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
   
-  #user_profile_treatment(user_profile,1)
+  user_profile_treatment(user_profile,1)
   response = profile_refinement(user_profile)
   print(response)
-# #   # questions = response.choices[0].message.content
-#   responses = []
+  responses = []
+  for r in response:
+    print(r)
+    response = input("")
+    responses.append(response)
 
-#   questions="""
-#  ```json
-#   [
-#     "Which specific aspects of chronic kidney disease (e.g., diabetic nephropathy, glomerulonephritis) are most relevant to your research?",
-#     "Do you prioritize studies on AI applications in nephrology over general CKD research?",
-#     "Are you more interested in early-stage research (e.g., novel biomarkers) or applied clinical studies (e.g., model validation)?"
-#   ]
-#   ```
-#   """
-#   questions = re.sub(r"```json|```","",questions).strip()
-#   questions = json.loads(questions)
-  
-#   for question in questions:
-#     print(question)
-#     response = input("")
-#     responses.append(response)
-#   res = query_generation(user_profile, responses)
-#   print(res)
+  res = query_generation(user_profile, responses)
+  print(res)
 
 
 #   res = """
