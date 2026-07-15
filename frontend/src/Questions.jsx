@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "./api";
+import "./css/qsts.css";
 
 const Questions = () => {
   const [questions, setQuestions] = useState(null);
@@ -13,13 +14,38 @@ const Questions = () => {
     question2:"",
     question3:""
   });
-
+  const [errors, setErrors] = useState({
+          qst1: "",
+          qst2: "",
+          qst3: "",
+          general:""
+      });
   const handleSubmit = async (e) => {
+    setErrors({
+      qst1:"",
+      qst2:"",
+      qst3:"",
+      general:""
+    })
+    let newErrors = {}
     e.preventDefault();
-    if(!answers.question1.trim() || !answers.question2.trim() || !answers.question3.trim()) {
-      alert("Veuillez remplir toutes les questions.");
+    if(!answers.question1.trim()){
+      newErrors.qst1="Veuillez remplir tous les champs.";
+    }
+
+    if(!answers.question2.trim()){
+      newErrors.qst2="Veuillez remplir tous les champs.";
+    }
+
+    if(!answers.question3.trim()){
+      newErrors.qst3="Veuillez remplir tous les champs.";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+
+    
     try{
       const response = await API.post("/set-results", answers, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -28,8 +54,22 @@ const Questions = () => {
 
     }
     catch(err){
-      console.log(err.response?.data);
-      alert(err.response?.data?.detail || err.message);
+      if(err.response?.status == 422){
+          setErrors({
+        ...errors,
+        general: ""
+        });
+      }
+      else{               
+        setErrors({
+          qst1:"",
+          qst2:"",
+          qst3:"",
+          general:
+          err.response?.data?.detail ||
+          "Une erreur est survenue."
+              })
+    }
     }
 
   }
@@ -64,12 +104,12 @@ const Questions = () => {
       <form onSubmit={handleSubmit}>
       {questions.map((question, index) => (
         <div key={index}>
-          <label>{question}</label><br/>
-          <textarea value={answers[`question${index + 1}`]} onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})} /><br/>
+          <label className="form-label">{question}</label><br/>
+          <textarea className="textarea-form" value={answers[`question${index + 1}`]} onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})} /><br/>
         </div>
       ))}
       
-      <button>Soumettre</button>
+      <button className="btn-inscrire">Soumettre</button>
       </form>
     </div>
     

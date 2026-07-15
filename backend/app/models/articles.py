@@ -11,6 +11,6 @@ class Article(Base):
     source = Column(String)
     id_user = Column(Integer, ForeignKey("users.id"))
 
-
     id_keyword = relationship("Keyword", back_populates="article")
     user_a = relationship("User", back_populates="articles")
+

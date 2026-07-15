@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 import re
 from app.email_service import send_email
 
-
 def process_user(db, user):
     delete_old_articles(user.id)
     queries = db.query(Query).filter(Query.id_user == user.id).all()
@@ -43,8 +42,9 @@ def process_user(db, user):
             time.sleep(1)
 
         time.sleep(5)
-
+    print("1")
     resultats = search_articles_for_user(user.id)
+    print("2")
     print(f"the search results for user {user.id} are {resultats}")
 
     date = datetime.now()
@@ -52,7 +52,6 @@ def process_user(db, user):
     user_last_updated_date = str(date.strftime("%Y-%m-%d"))
     user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
     update_user_date(user.id, user_next_updated_date, user_last_updated_date)
-    send_email(user.email)
     return resultats
 
 
@@ -69,11 +68,10 @@ def run_batch():
         for user in users:
             try:
                 process_user(db, user)
+                send_email(user.email)
             except Exception as e:
                 print(f"Erreur pour l'utilisateur {user.id}: {e}")
     finally:
         db.close()
 
 
-if __name__ == "__main__":
-    run_batch()

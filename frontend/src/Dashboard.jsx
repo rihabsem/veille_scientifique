@@ -77,7 +77,7 @@ export default function Dashboard() {
             {results.semantic_scholar.length === 0 && <li>Aucun résultat</li>}
             {results.semantic_scholar.map((article) => (
               <li key={article.id}>
-                <strong>{article.title} - <a href={`https://www.semanticscholar.org/paper/${article.title.replace(/ /g,"-")}/${article.id}`} target="_blank">pour consulter l'article</a></strong>
+                <strong>{article.title} - <a className="lien" href={`https://www.semanticscholar.org/paper/${article.title.replace(/ /g,"-")}/${article.id}`} target="_blank">pour consulter l'article</a></strong>
                 <p>{article.abstract}</p>
               </li>
             ))}
@@ -88,7 +88,7 @@ export default function Dashboard() {
             {results.clinical_trials.length === 0 && <li>Aucun résultat</li>}
             {results.clinical_trials.map((article) => (
               <li key={article.id}>
-                <strong>{article.title} - <a href={`https://clinicaltrials.gov/search?cond=${article.id}`} target="_blank">pour consulter l'article</a></strong>
+                <strong>{article.title} - <a className="lien" href={`https://clinicaltrials.gov/search?cond=${article.id}`} target="_blank">pour consulter l'article</a></strong>
                 <p>{article.abstract}</p>
               </li>
             ))}
@@ -99,7 +99,7 @@ export default function Dashboard() {
             {results.pubmed.length === 0 && <li>Aucun résultat</li>}
             {results.pubmed.map((article) => (
               <li key={article.id}>
-                <strong>{article.title} - <a href={`https://pubmed.ncbi.nlm.nih.gov/${article.id}/`} target="_blank">pour consulter l'article</a></strong>
+                <strong>{article.title} - <a className="lien" href={`https://pubmed.ncbi.nlm.nih.gov/${article.id}/`} target="_blank">pour consulter l'article</a></strong>
                 <p>{article.abstract}</p>
               </li>
             ))}

@@ -7,14 +7,13 @@ from app.coord import run_batch
 from app.data_cleaning import clean_data, get_embedding
 from app.vector_db_creation import store_user_in_db, search_articles_for_user
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import time
+from pydantic import BaseModel, field_validator, Field
+from typing import Literal
 from datetime import datetime, timedelta
 import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
-from zoneinfo import ZoneInfo
 
 scheduler = BackgroundScheduler()
 
@@ -22,7 +21,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=10, minute=5, timezone=ZoneInfo("Europe/Brussels")),
+        trigger=CronTrigger(hour=15, minute=5, timezone='Europe/Brussels'),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -39,20 +38,38 @@ app.add_middleware(
     allow_headers=["*"],
 )
 class LoginRequest(BaseModel):
-    email: str
+    email: str 
     password: str
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value):
+        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+        if not re.match(pattern, value):
+            raise ValueError(
+                "L'adresse email doit appartenir au domaine @ulb.be"
+            )
+        return value
 
 class RegisterRequest(BaseModel):
-    name: str
+    name: str = Field(min_length=1)
     email : str
-    password : str
-    profile : str
-    update_rate : str
+    password : str = Field(min_length=8)
+    profile : str = Field(min_length=1)
+    update_rate : Literal["weekly", "monthly"]
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value):
+        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+        if not re.match(pattern, value):
+            raise ValueError(
+                "L'adresse email doit appartenir au domaine @ulb.be"
+            )
+        return value
 
 class SetResultsRequest(BaseModel):
-    question1: str
-    question2: str
-    question3: str
+    question1: str = Field(min_length=1)
+    question2: str = Field(min_length=1)
+    question3: str = Field(min_length=1)
 
 @app.get("/chroma-db")
 def test():
