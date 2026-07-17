@@ -4,6 +4,7 @@ from app.vector_db_creation import store_user_in_db
 from app.model import insert_query
 from mistralai.client import Mistral
 import json
+from json_repair import repair_json
 import re
 
 #1_ clean the data
@@ -177,8 +178,12 @@ def user_profile_treatment(user_profile, user_id):
 def launch_LLM(user_profile, id_user, responses):
   res = query_generation(user_profile, responses)
   res = re.sub(r"```json|```","",res).strip()
-  res = json.loads(res)
+  try:
+    res = json.loads(res)
+  except json.JSONDecodeError:
+    res = json.loads(repair_json(res))
   print(res)
+  # res = json.loads(res)
   for r in res:
     insert_query(r["semantic_scholar"], "Semantic Scholar", id_user)
     insert_query(r["pubmed"], "PubMed", id_user)

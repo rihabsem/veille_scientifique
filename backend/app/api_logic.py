@@ -5,9 +5,6 @@ from bs4 import BeautifulSoup
 import time
 from app.data_cleaning import clean_data, get_embedding
 from app.vector_db_creation import store_embedding_in_db
-from app.models.articles import Article
-from app.models.users import User
-from app.models.keywords import Keyword
 from app.database import SessionLocal
 from app.model import insert_article, insert_keywords, insert_keywords_PubMed
 

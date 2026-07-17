@@ -57,7 +57,7 @@ const Questions = () => {
       if(err.response?.status == 422){
           setErrors({
         ...errors,
-        general: ""
+        general: err.response.data.detail[0].msg
         });
       }
       else{               
@@ -99,21 +99,31 @@ const Questions = () => {
   if (error) return <p>Erreur: {error}</p>;
 
   return (
-    <div>
-      <h2>Questions</h2>
-      <form onSubmit={handleSubmit}>
-      {questions.map((question, index) => (
-        <div key={index}>
-          <label className="form-label">{question}</label><br/>
-          <textarea className="textarea-form" value={answers[`question${index + 1}`]} onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})} /><br/>
-        </div>
-      ))}
-      
-      <button className="btn-inscrire">Soumettre</button>
-      </form>
-    </div>
-    
-  );
+  <div>
+    <h2>Questions</h2>
+    <form onSubmit={handleSubmit}>
+    {questions.map((question, index) => (
+      <div key={index}>
+        <label className="form-label">{question}</label><br/>
+        <textarea
+          className={`textarea-form ${errors[`qst${index + 1}`] ? "input-error" : ""}`}
+          value={answers[`question${index + 1}`]}
+          onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})}
+        /><br/>
+        {errors[`qst${index + 1}`] && (
+          <p className="error-message">{errors[`qst${index + 1}`]}</p>
+        )}
+      </div>
+    ))}
+
+    <button className="btn-inscrire">Soumettre</button>
+
+    {errors.general && (
+      <p className="error-message">{errors.general}</p>
+    )}
+    </form>
+  </div>
+);
 };
 
 export default Questions;

@@ -17,3 +17,4 @@ apscheduler
 resend
 pytest
 httpx
+json-repair

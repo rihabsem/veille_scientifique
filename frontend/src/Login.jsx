@@ -34,12 +34,12 @@ export default function Login() {
 
         let newErrors = {};
 
-        if (!form.email.trim()) {
-            newErrors.email = "Veuillez saisir votre email.";
-        } else if (!isValidEmail(form.email)) {
-            newErrors.email =
-                "Veuillez utiliser un email valide de l'ULB (ex : prenom.nom@ulb.be).";
-        }
+        // if (!form.email.trim()) {
+        //     newErrors.email = "Veuillez saisir votre email.";
+        // } else if (!isValidEmail(form.email)) {
+        //     newErrors.email =
+        //         "Veuillez utiliser un email valide de l'ULB (ex : prenom.nom@ulb.be).";
+        // }
 
         if (!form.password.trim()) {
             newErrors.password = "Veuillez saisir votre mot de passe.";

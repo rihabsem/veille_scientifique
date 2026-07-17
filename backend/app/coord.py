@@ -46,7 +46,6 @@ def process_user(db, user):
     resultats = search_articles_for_user(user.id)
     print("2")
     print(f"the search results for user {user.id} are {resultats}")
-
     date = datetime.now()
     date_next = date + timedelta(days=days_to_add)
     user_last_updated_date = str(date.strftime("%Y-%m-%d"))
@@ -68,7 +67,7 @@ def run_batch():
         for user in users:
             try:
                 process_user(db, user)
-                send_email(user.email)
+                
             except Exception as e:
                 print(f"Erreur pour l'utilisateur {user.id}: {e}")
     finally:

@@ -181,3 +181,36 @@ def get_articles_by_date(user_id, last_updated_date, next_updated_date):
     finally:
         db.close()
 
+def update_user_profile(user_id, profile):
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            user.profil = profile
+            db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+def update_user_update_rate(user_id, update_rate):
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            if update_rate == "weekly":
+                days = 7
+            else :
+                days = 31
+            date = user.last_updated_date
+            date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+            date_next = date+timedelta(days=days)
+            date_next_string = re.sub(r"\d{2}:\d{2}:\d{2}\.\d+", "", str(date_next)).strip()
+            user.next_updated_date = date_next_string
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+

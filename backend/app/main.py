@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, get_articles_by_date
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, get_articles_by_date, update_user_update_rate, update_user_profile
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
@@ -14,6 +14,7 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
+from app.email_service import send_email
 
 scheduler = BackgroundScheduler()
 
@@ -21,7 +22,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=15, minute=5, timezone='Europe/Brussels'),
+        trigger=CronTrigger(hour=16, minute=50, timezone='Europe/Brussels'),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -40,15 +41,19 @@ app.add_middleware(
 class LoginRequest(BaseModel):
     email: str 
     password: str
-    @field_validator("email")
-    @classmethod
-    def validate_email(cls, value):
-        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
-        if not re.match(pattern, value):
-            raise ValueError(
-                "L'adresse email doit appartenir au domaine @ulb.be"
-            )
-        return value
+    # @field_validator("email")
+    # @classmethod
+    # def validate_email(cls, value):
+    #     pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+    #     if not re.match(pattern, value):
+    #         raise ValueError(
+    #             "L'adresse email doit appartenir au domaine @ulb.be"
+    #         )
+    #     return value
+
+class updateRequest(BaseModel):
+    profile : str = Field(min_length=1)
+    update_rate : Literal["weekly", "monthly"]
 
 class RegisterRequest(BaseModel):
     name: str = Field(min_length=1)
@@ -56,15 +61,15 @@ class RegisterRequest(BaseModel):
     password : str = Field(min_length=8)
     profile : str = Field(min_length=1)
     update_rate : Literal["weekly", "monthly"]
-    @field_validator("email")
-    @classmethod
-    def validate_email(cls, value):
-        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
-        if not re.match(pattern, value):
-            raise ValueError(
-                "L'adresse email doit appartenir au domaine @ulb.be"
-            )
-        return value
+    # @field_validator("email")
+    # @classmethod
+    # def validate_email(cls, value):
+    #     pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+    #     if not re.match(pattern, value):
+    #         raise ValueError(
+    #             "L'adresse email doit appartenir au domaine @ulb.be"
+    #         )
+    #     return value
 
 class SetResultsRequest(BaseModel):
     question1: str = Field(min_length=1)
@@ -193,9 +198,30 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=404, detail="Pas encore de résultats disponibles")
 
     results = get_articles(article_ids, user_id)
+    send_email(user.email, results)
     return results
+@app.get("/data")
+def get_curent_user(user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    return user
 
+@app.post("/update")
+def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
 
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+
+    if user.weekly_monthly != data.update_rate:
+        update_user_update_rate(user_id, data.update_rate)
+
+    if user.profil != data.profile:
+        update_user_profile(user_id, data.profile)
+
+    return {"status": "ok"}
+    
     
 
     

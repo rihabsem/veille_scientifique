@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Register from './Register';
 import Questions from './Questions'; 
 import PrivateRoute from './PrivateRoute'; 
+import UserData from './UserData';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Questions />
           </PrivateRoute>
         } />
+        <Route path="/user-data" element={<UserData/>}/>
       </Routes>
     </BrowserRouter>
   );
