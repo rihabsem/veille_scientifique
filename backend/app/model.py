@@ -3,8 +3,8 @@ from app.models.users import User
 from app.models.keywords import Keyword
 from app.models.query import Query
 from app.database import SessionLocal
-import json
 from datetime import datetime, timedelta
+from sqlalchemy import func
 import re
 
 
@@ -208,9 +208,35 @@ def update_user_update_rate(user_id, update_rate):
             date_next = date+timedelta(days=days)
             date_next_string = re.sub(r"\d{2}:\d{2}:\d{2}\.\d+", "", str(date_next)).strip()
             user.next_updated_date = date_next_string
+            db.commit()
     except Exception:
         db.rollback()
         raise
     finally:
         db.close()
+
+def delete_queries_by_source(user_id):
+    db = SessionLocal()
+    try:
+        db.query(Query).filter(
+            Query.id_user == user_id).delete(synchronize_session=False)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        db.close()
+
+def count_queries(user_id):
+    db = SessionLocal()
+    try:
+        count = (
+            db.query(func.count(Query.id))
+            .filter(Query.id_user == user_id)
+            .scalar()
+        )
+        return count
+    finally:
+        db.close()
+
 

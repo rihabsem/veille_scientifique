@@ -6,7 +6,7 @@ from app.model import update_user_date, get_user_by_date
 import time
 from datetime import datetime, timedelta
 import re
-from app.email_service import send_email
+
 
 def process_user(db, user):
     delete_old_articles(user.id)

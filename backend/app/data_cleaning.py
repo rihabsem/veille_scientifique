@@ -11,7 +11,7 @@ def clean_data(data):
     translator = str.maketrans('','',string.punctuation)
     data = data.translate(translator)
     data = re.sub('\s+', '', data)
-    return data
+    return data 
 
 def get_embedding(data):
     inputs = tokenizer(
