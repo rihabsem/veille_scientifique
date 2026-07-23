@@ -58,22 +58,22 @@ def send_email(to_email, articles):
     if objet is None:
         return
     print(objet)
-    # msg.set_content(f"""
-    # Des nouvelles mise a jour sont disponible sur votre compte:
-    # Voici un resumé récapitulatif:
-    # {objet}
-    # """)
+    msg.set_content(f"""
+    Des nouvelles mise a jour sont disponible sur votre compte:
+    Voici un resumé récapitulatif:
+    {objet}
+    """)
 
-    # try:
-    #     with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
-    #         smtp.starttls()
-    #         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-    #         smtp.send_message(msg)
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+            smtp.starttls()
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.send_message(msg)
 
-    #     print(f"Email sent successfully to {to_email}")
+        print(f"Email sent successfully to {to_email}")
 
-    # except Exception as e:
-    #     print(f"Failed to send email: {e}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 
 # if __name__ == "__main__":

@@ -97,6 +97,7 @@ export default function UserData() {
                 <label>Nom</label><br />
 
                 <input
+                    disabled
                     type="text"
                     value={data.nom}
                     readOnly
@@ -107,6 +108,7 @@ export default function UserData() {
                 <label>Email</label><br />
 
                 <input
+                    disabled
                     type="text"
                     value={data.email}
                     readOnly

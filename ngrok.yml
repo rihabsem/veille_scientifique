@@ -1,0 +1,10 @@
+# ngrok.yml (à la racine de votre projet, par exemple)
+version: "2"
+authtoken: "3GuBYo1uKIJJEFOJohQL2Ave8rM_2GSGuZiSxNTyDR9C72Pka"
+tunnels:
+  frontend:
+    addr: 5173
+    proto: http
+  backend:
+    addr: 8000
+    proto: http

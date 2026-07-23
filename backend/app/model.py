@@ -198,17 +198,20 @@ def update_user_update_rate(user_id, update_rate):
     db = SessionLocal()
     try:
         user = db.query(User).filter(User.id == user_id).first()
-        if user:
-            if update_rate == "weekly":
-                days = 7
-            else :
-                days = 31
-            date = user.last_updated_date
-            date_obj = datetime.strptime(date, "%Y-%m-%d").date()
-            date_next = date+timedelta(days=days)
-            date_next_string = re.sub(r"\d{2}:\d{2}:\d{2}\.\d+", "", str(date_next)).strip()
-            user.next_updated_date = date_next_string
-            db.commit()
+        if not user:
+            return
+
+        days = 7 if update_rate == "weekly" else 31
+
+        date_obj = datetime.strptime(user.last_updated_date, "%Y-%m-%d").date()
+        date_next = date_obj + timedelta(days=days)
+
+        user.update_rate = update_rate
+        user.next_updated_date = date_next.isoformat()
+        last_updated_date = User.last_updated_date
+        print(date_next)
+        print(last_updated_date)
+        db.commit()
     except Exception:
         db.rollback()
         raise

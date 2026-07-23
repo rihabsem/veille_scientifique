@@ -22,7 +22,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=16, minute=50, timezone='Europe/Brussels'),
+        trigger=CronTrigger(hour=13, minute=58, timezone='Europe/Brussels'),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex="http://localhost:5173",
+    allow_origin_regex=r"http://localhost:5173|https://gallstone-botanical-reps.ngrok-free.dev",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -198,7 +198,9 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=404, detail="Pas encore de résultats disponibles")
 
     results = get_articles(article_ids, user_id)
+    print("sending email")
     send_email(user.email, results)
+    print("email sent")
     return results
 @app.get("/data")
 def get_curent_user(user_id: int = Depends(get_current_user_id)):

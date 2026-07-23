@@ -37,7 +37,8 @@ def profile_refinement(user_profile):
   - Do NOT generate advanced scientific or research-review style questions
   - Do NOT ask questions that require specialized scientific knowledge to answer (e.g. choosing between specific mechanisms, pathophysiological pathways, or methodological approaches)
   - Do NOT ask yes/no questions about whether to "include" a specific narrow subtopic (e.g. "Do you want to include clinical trials on X?")
-  - Do NOOT ask the user if they are interested in recent or old literature, or if they want to focus on specific study types (e.g. clinical trials, meta-analyses, case reports)
+  - Do NOT ask the user if they are interested in recent or old literature, or if they want to focus on specific study types (e.g. clinical trials, meta-analyses, case reports)
+  - Match EXACTLY the user's langage they used to describe their profile
 
   - Questions must NOT include:
     - tools or platforms (PubMed, ClinicalTrials, Google Scholar, etc.)
@@ -46,9 +47,11 @@ def profile_refinement(user_profile):
   - Do not provide explanations
 
   IMPORTANT:
-  - The output language MUST strictly match the language of the input profile
-  - Do NOT translate
-  - Do NOT change language
+  - The output language MUST strictly match the language of the input profile (given in the CONTEXT section above).
+  - If the profile is written in English, your questions MUST be in English.
+  - If the profile is written in French, your questions MUST be in French.
+  - Do NOT translate. Do NOT default to French regardless of instructions elsewhere.
+  
 
   OUTPUT FORMAT:
   Return ONLY a JSON array of 3 strings
@@ -156,7 +159,7 @@ RULES:
 - Do not include markdown
 - Do not duplicate queries
 - Ensure diversity across queries
-- Maximum 5 queries
+- I want EXACTLY 5 queries
   """
   client = Mistral(api_key=os.environ["MISTRAL_KEY"])
   response = client.chat.complete(

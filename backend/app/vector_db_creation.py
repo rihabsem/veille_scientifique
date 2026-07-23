@@ -74,7 +74,7 @@ def search_user_embedding(user_id):
     return embeddings[0]
 
 
-def search_articles_for_user(user_id, k=10):
+def search_articles_for_user(user_id, k=20):
     user_embedding = search_user_embedding(str(user_id))
     if user_embedding is None:
         print("No embedding found for user")

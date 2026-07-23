@@ -106,9 +106,10 @@ export default function Dashboard() {
           </ul>
         </>
       )}
-
+      <a href="/user-data">Modifier vos informations</a><br/>
 
       <button onClick={handleLogout}>Logout</button>
+
     </div>
   );
 }

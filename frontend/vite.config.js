@@ -12,9 +12,20 @@ export default defineConfig({
       usePolling: true,
       interval: 100,
     },
+    // hmr: {
+    //   host: 'localhost',
+    //   port: 5173,
+    // },
     hmr: {
-      host: 'localhost',
-      port: 5173,
+      protocol: 'wss',
+      clientPort: 443,
     },
+    allowedHosts: [
+      'gallstone-botanical-reps.ngrok-free.dev',
+      '.devtunnels.ms',
+      '.ngrok-free.dev',
+      '.ngrok-free.app',
+    ],
   }
+  
 })
