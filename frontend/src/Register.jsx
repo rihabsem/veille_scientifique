@@ -83,7 +83,6 @@ const Register = () => {
         password: form.password
       });
       localStorage.setItem("token", loginResponse.data.access_token);
-      alert("token : " + loginResponse.data.access_token);
       navigate("/questions");
     }
     catch(err){

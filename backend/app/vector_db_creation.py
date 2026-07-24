@@ -99,4 +99,31 @@ def delete_old_articles(user_id):
     except Exception as e:
         print(f"Problem deleting articles for user {user_id} : {e}")
 
+def update_user_embedding(user_id, embedding):
+    collection = get_users_collection()
+    try:
+        collection.update(
+            ids=[str(user_id)],
+            embeddings=[embedding]
+        )
+        print(f"Updated embedding for user: {user_id}")
+    except Exception as e:
+        print(f"Error updating embedding for {user_id}: {e}")
+
+def clear_users_collection():
+    collection = get_users_collection()
+    result = collection.get()
+    ids = result["ids"]
+    if ids:
+        collection.delete(ids=ids)
+        print(f"Supprimé {len(ids)} entrées de la collection users")
+    else:
+        print("Collection users déjà vide")
+
+if __name__ == "__main__":
+    id = 2
+    embedding = search_user_embedding(str(id))
+
+
+    
 

@@ -5,9 +5,9 @@ from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
 from app.coord import run_batch
 from app.data_cleaning import clean_data, get_embedding
-from app.vector_db_creation import store_user_in_db, search_articles_for_user
+from app.vector_db_creation import store_user_in_db, search_articles_for_user,update_user_embedding
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel,Field
 from typing import Literal
 from datetime import datetime, timedelta
 import re
@@ -22,7 +22,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=13, minute=58, timezone='Europe/Brussels'),
+        trigger=CronTrigger(hour=13, minute=42, timezone='Europe/Brussels'),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://localhost:5173|https://gallstone-botanical-reps.ngrok-free.dev",
+    allow_origin_regex=r"http://localhost:5173|https://.*\.euw\.devtunnels\.ms",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -106,11 +106,6 @@ def login(data: LoginRequest):
             status_code=401,
             detail="Mot de passe incorrect"
         )
-    # if(data.password != user.hashed_password):
-    #     raise HTTPException(
-    #         status_code=401,
-    #         detail="Mot de passe incorrect"
-    #     )
     token = create_access_token({
         "email" : user.email,
         "id" : user.id
@@ -202,6 +197,7 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
     send_email(user.email, results)
     print("email sent")
     return results
+
 @app.get("/data")
 def get_curent_user(user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
@@ -218,9 +214,11 @@ def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current
 
     if user.weekly_monthly != data.update_rate:
         update_user_update_rate(user_id, data.update_rate)
-
     if user.profil != data.profile:
         update_user_profile(user_id, data.profile)
+        profile_cleaned = clean_data(data.profile)
+        embedding = get_embedding(profile_cleaned)
+        update_user_embedding(user_id, embedding)
 
     return {"status": "ok"}
     

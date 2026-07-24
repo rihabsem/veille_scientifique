@@ -29,10 +29,7 @@ def profile_refinement(user_profile):
 
   - Questions should be simple, direct, and user-oriented
   - Focus on preferences, interests, and scope of monitoring
-
-  Examples of good questions (non-exhaustive):
-  - Which medical specialties are most relevant to your work or interest?
-  - Are you more interested in diagnosis, treatment, or disease mechanisms?
+  - For ALL the questions you should provide 3 answer options
 
   - Do NOT generate advanced scientific or research-review style questions
   - Do NOT ask questions that require specialized scientific knowledge to answer (e.g. choosing between specific mechanisms, pathophysiological pathways, or methodological approaches)

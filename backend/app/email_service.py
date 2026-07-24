@@ -76,6 +76,8 @@ def send_email(to_email, articles):
         print(f"Failed to send email: {e}")
 
 
+
+
 # if __name__ == "__main__":
 #     send_email(
 #         to_email="rihabalx@gmail.com"
