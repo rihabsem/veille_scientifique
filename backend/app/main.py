@@ -14,7 +14,7 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
-from app.email_service import send_email
+
 
 scheduler = BackgroundScheduler()
 
@@ -194,7 +194,7 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
 
     results = get_articles(article_ids, user_id)
     print("sending email")
-    send_email(user.email, results)
+    
     print("email sent")
     return results
 

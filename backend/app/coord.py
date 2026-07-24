@@ -67,7 +67,7 @@ def run_batch():
         for user in users:
             try:
                 process_user(db, user)
-                
+                send_email(user.email, results)
             except Exception as e:
                 print(f"Erreur pour l'utilisateur {user.id}: {e}")
     finally:
