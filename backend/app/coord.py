@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import re
 
 
+
 def process_user(db, user):
     delete_old_articles(user.id)
     queries = db.query(Query).filter(Query.id_user == user.id).all()
@@ -67,7 +68,7 @@ def run_batch():
         for user in users:
             try:
                 process_user(db, user)
-                send_email(user.email, results)
+                
             except Exception as e:
                 print(f"Erreur pour l'utilisateur {user.id}: {e}")
     finally:

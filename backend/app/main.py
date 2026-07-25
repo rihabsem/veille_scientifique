@@ -14,6 +14,7 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
+from app.email_service import send_email
 
 
 scheduler = BackgroundScheduler()
@@ -22,7 +23,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=13, minute=42, timezone='Europe/Brussels'),
+        trigger=CronTrigger(hour=18, minute=53, timezone='Europe/Brussels'),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -193,9 +194,7 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
         raise HTTPException(status_code=404, detail="Pas encore de résultats disponibles")
 
     results = get_articles(article_ids, user_id)
-    print("sending email")
-    
-    print("email sent")
+    send_email(to_email, results)
     return results
 
 @app.get("/data")

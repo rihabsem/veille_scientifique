@@ -121,9 +121,8 @@ def clear_users_collection():
         print("Collection users déjà vide")
 
 if __name__ == "__main__":
-    id = 2
+    id=3
     embedding = search_user_embedding(str(id))
-
 
     
 
