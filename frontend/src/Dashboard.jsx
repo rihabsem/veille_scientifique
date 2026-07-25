@@ -1,9 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import API from "./api";
+import Header from "./components/Header";
+import HelpTooltip from "./components/HelpTooltip";
+import Spinner from "./components/Spinner";
+import { useLanguage } from "./i18n/LanguageContext";
+import "./css/dashboard.css";
+
+const SOURCES = [
+  {
+    key: "semantic_scholar",
+    labelKey: "dashboard.sourceSemanticScholar",
+    helpKey: "dashboard.sourceSemanticScholarHelp",
+    linkFor: (article) =>
+      `https://www.semanticscholar.org/paper/${article.title.replace(/ /g, "-")}/${article.id}`,
+  },
+  {
+    key: "clinical_trials",
+    labelKey: "dashboard.sourceClinicalTrials",
+    helpKey: "dashboard.sourceClinicalTrialsHelp",
+    linkFor: (article) => `https://clinicaltrials.gov/search?cond=${article.id}`,
+  },
+  {
+    key: "pubmed",
+    labelKey: "dashboard.sourcePubmed",
+    helpKey: "dashboard.sourcePubmedHelp",
+    linkFor: (article) => `https://pubmed.ncbi.nlm.nih.gov/${article.id}/`,
+  },
+];
 
 export default function Dashboard() {
-  const navigate = useNavigate();
+  const { t } = useLanguage();
   const hasRun = useRef(false);
   const [results, setResults] = useState({
     semantic_scholar: [],
@@ -13,11 +39,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [noUpdate, setNoUpdate] = useState(false);
   const [error, setError] = useState(null);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
 
   useEffect(() => {
     if (hasRun.current) return;
@@ -61,55 +82,50 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p>Erreur: {error}</p>;
-
   return (
-    <div>
-      <h1>Bienvenue !</h1>
+    <>
+      <Header />
+      <div className="page">
+        <h1>{t("dashboard.welcomeTitle")}</h1>
 
-      {noUpdate ? (
-        <p>Pas de mise à jour nécessaire pour le moment.</p>
-      ) : (
-        <>
-          <h3>Semantic Scholar</h3>
-          <ul>
-            {results.semantic_scholar.length === 0 && <li>Aucun résultat</li>}
-            {results.semantic_scholar.map((article) => (
-              <li key={article.id}>
-                <strong>{article.title} - <a className="lien" href={`https://www.semanticscholar.org/paper/${article.title.replace(/ /g,"-")}/${article.id}`} target="_blank">pour consulter l'article</a></strong>
-                <p>{article.abstract}</p>
-              </li>
-            ))}
-          </ul>
+        {loading ? (
+          <Spinner />
+        ) : error ? (
+          <p className="error-message">{error}</p>
+        ) : noUpdate ? (
+          <p className="dashboard-empty">{t("dashboard.noUpdate")}</p>
+        ) : (
+          SOURCES.map((source) => (
+            <section key={source.key} className="dashboard-section">
+              <h3 className="dashboard-section__title">
+                <span className="badge">{t(source.labelKey)}</span>
+                <HelpTooltip text={t(source.helpKey)} />
+              </h3>
 
-          <h3>Clinical Trials</h3>
-          <ul>
-            {results.clinical_trials.length === 0 && <li>Aucun résultat</li>}
-            {results.clinical_trials.map((article) => (
-              <li key={article.id}>
-                <strong>{article.title} - <a className="lien" href={`https://clinicaltrials.gov/search?cond=${article.id}`} target="_blank">pour consulter l'article</a></strong>
-                <p>{article.abstract}</p>
-              </li>
-            ))}
-          </ul>
-
-          <h3>PubMed</h3>
-          <ul>
-            {results.pubmed.length === 0 && <li>Aucun résultat</li>}
-            {results.pubmed.map((article) => (
-              <li key={article.id}>
-                <strong>{article.title} - <a className="lien" href={`https://pubmed.ncbi.nlm.nih.gov/${article.id}/`} target="_blank">pour consulter l'article</a></strong>
-                <p>{article.abstract}</p>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      <a href="/user-data">Modifier vos informations</a><br/>
-
-      <button onClick={handleLogout}>Logout</button>
-
-    </div>
+              {results[source.key].length === 0 ? (
+                <p className="dashboard-empty">{t("dashboard.noResults")}</p>
+              ) : (
+                <div className="article-list">
+                  {results[source.key].map((article) => (
+                    <article key={article.id} className="article-card">
+                      <h4 className="article-card__title">{article.title}</h4>
+                      <p className="article-card__abstract">{article.abstract}</p>
+                      <a
+                        className="article-card__link"
+                        href={source.linkFor(article)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {t("common.readMore")}
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          ))
+        )}
+      </div>
+    </>
   );
 }

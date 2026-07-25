@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "./api";
+import Header from "./components/Header";
+import Spinner from "./components/Spinner";
+import { useLanguage } from "./i18n/LanguageContext";
 import "./css/qsts.css";
 
 const Questions = () => {
+  const { t } = useLanguage();
   const [questions, setQuestions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,7 +49,7 @@ const Questions = () => {
       return;
     }
 
-    
+
     try{
       const response = await API.post("/set-results", answers, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -60,7 +64,7 @@ const Questions = () => {
         general: err.response.data.detail[0].msg
         });
       }
-      else{               
+      else{
         setErrors({
           qst1:"",
           qst2:"",
@@ -85,7 +89,7 @@ const Questions = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setQuestions(response.data);
-        
+
       } catch (err) {
         setError(err.response?.data?.detail || "Erreur lors du chargement");
       } finally {
@@ -95,35 +99,44 @@ const Questions = () => {
     fetchQuestions();
   }, []);
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p>Erreur: {error}</p>;
-
   return (
-  <div>
-    <h2>Questions</h2>
-    <form onSubmit={handleSubmit}>
-    {questions.map((question, index) => (
-      <div key={index}>
-        <label className="form-label">{question}</label><br/>
-        <textarea
-          className={`textarea-form ${errors[`qst${index + 1}`] ? "input-error" : ""}`}
-          value={answers[`question${index + 1}`]}
-          onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})}
-        /><br/>
-        {errors[`qst${index + 1}`] && (
-          <p className="error-message">{errors[`qst${index + 1}`]}</p>
+    <>
+      <Header />
+      <div className="page">
+        {loading ? (
+          <Spinner />
+        ) : error ? (
+          <p className="error-message">{error}</p>
+        ) : (
+          <div className="card questions-card">
+            <h2>{t("questions.title")}</h2>
+            <p className="questions-intro">{t("questions.intro")}</p>
+            <form onSubmit={handleSubmit}>
+            {questions.map((question, index) => (
+              <div key={index}>
+                <label className="form-label">{question}</label><br/>
+                <textarea
+                  className={`textarea-form ${errors[`qst${index + 1}`] ? "input-error" : ""}`}
+                  value={answers[`question${index + 1}`]}
+                  onChange={(e) => setAnswers({...answers, [`question${index + 1}`]: e.target.value})}
+                /><br/>
+                {errors[`qst${index + 1}`] && (
+                  <p className="error-message">{errors[`qst${index + 1}`]}</p>
+                )}
+              </div>
+            ))}
+
+            <button className="btn btn-primary" type="submit">{t("questions.submitButton")}</button>
+
+            {errors.general && (
+              <p className="error-message">{errors.general}</p>
+            )}
+            </form>
+          </div>
         )}
       </div>
-    ))}
-
-    <button className="btn-inscrire">Soumettre</button>
-
-    {errors.general && (
-      <p className="error-message">{errors.general}</p>
-    )}
-    </form>
-  </div>
-);
+    </>
+  );
 };
 
 export default Questions;

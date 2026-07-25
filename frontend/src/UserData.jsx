@@ -1,9 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "./api";
+import Header from "./components/Header";
+import HelpTooltip from "./components/HelpTooltip";
+import Spinner from "./components/Spinner";
+import { useLanguage } from "./i18n/LanguageContext";
+import "./css/login.css";
+import "./css/userdata.css";
 
 export default function UserData() {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -83,81 +90,87 @@ export default function UserData() {
         fetchUserData();
     }, []);
 
-    if (loading) return <p>Chargement...</p>;
-
-    if (error && !data)
-        return <p>{error}</p>;
-
     return (
-        <div>
-            <h2>Profil utilisateur</h2>
+        <>
+            <Header userName={data?.nom ?? null} />
+            <div className="page">
+                {loading ? (
+                    <Spinner />
+                ) : error && !data ? (
+                    <p className="error-message">{error}</p>
+                ) : (
+                    <div className="card userdata-card">
+                        <h2>{t("userdata.title")}</h2>
 
-            <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit}>
 
-                <label>Nom</label><br />
+                            <label className="form-label">{t("userdata.nameLabel")}</label><br />
 
-                <input
-                    disabled
-                    type="text"
-                    value={data.nom}
-                    readOnly
-                />
+                            <input
+                                disabled
+                                type="text"
+                                className="form"
+                                value={data.nom}
+                                readOnly
+                            />
 
-                <br /><br />
+                            <label className="form-label">{t("userdata.emailLabel")}</label><br />
 
-                <label>Email</label><br />
+                            <input
+                                disabled
+                                type="text"
+                                className="form"
+                                value={data.email}
+                                readOnly
+                            />
 
-                <input
-                    disabled
-                    type="text"
-                    value={data.email}
-                    readOnly
-                />
+                            <div className="field-label-row">
+                                <label className="form-label">{t("userdata.profileLabel")}</label>
+                                <HelpTooltip text={`${t("register.profileHelp")} ${t("register.profileExample")}`} />
+                            </div>
 
-                <br /><br />
+                            <textarea
+                                className="form-area"
+                                value={form.profile}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        profile: e.target.value
+                                    })
+                                }
+                            />
 
-                <label>Profil</label><br />
+                            <div className="field-label-row">
+                                <label className="form-label">{t("userdata.rateLabel")}</label>
+                                <HelpTooltip text={t("register.rateHelp")} />
+                            </div>
 
-                <textarea
-                    value={form.profile}
-                    onChange={(e) =>
-                        setForm({
-                            ...form,
-                            profile: e.target.value
-                        })
-                    }
-                />
+                            <select
+                                className="form"
+                                value={form.update_rate}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        update_rate: e.target.value
+                                    })
+                                }
+                            >
+                                <option value="weekly">{t("register.rateWeekly")}</option>
+                                <option value="monthly">{t("register.rateMonthly")}</option>
+                            </select>
 
-                <br /><br />
+                            <button className="btn btn-primary formulaire__submit" type="submit">
+                                {t("userdata.submitButton")}
+                            </button>
 
-                <label>Cadence de mise à jour</label><br />
+                        </form>
 
-                <select
-                    value={form.update_rate}
-                    onChange={(e) =>
-                        setForm({
-                            ...form,
-                            update_rate: e.target.value
-                        })
-                    }
-                >
-                    <option value="weekly">Hebdomadaire</option>
-                    <option value="monthly">Mensuelle</option>
-                </select>
-
-                <br /><br />
-
-                <button type="submit">
-                    Mettre à jour
-                </button>
-
-            </form>
-
-            {error && (
-                <p style={{ color: "red" }}>
-                    {error}
-                </p>
-            )}
-        </div>
+                        {error && (
+                            <p className="error-message">{error}</p>
+                        )}
+                    </div>
+                )}
+            </div>
+        </>
     );
 }

@@ -23,7 +23,11 @@ function App() {
             <Questions />
           </PrivateRoute>
         } />
-        <Route path="/user-data" element={<UserData/>}/>
+        <Route path="/user-data" element={
+          <PrivateRoute>
+            <UserData/>
+          </PrivateRoute>
+        }/>
       </Routes>
     </BrowserRouter>
   );

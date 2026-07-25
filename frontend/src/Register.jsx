@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import {useNavigate} from "react-router-dom";
 import API from "./api";
+import Header from "./components/Header";
+import HelpTooltip from "./components/HelpTooltip";
+import { useLanguage } from "./i18n/LanguageContext";
 import "./css/login.css";
 
 const Register = () => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     name:"",
     email:"",
@@ -32,8 +36,8 @@ const Register = () => {
     return passwordRegex.test(password);
   }
 
-  
-    
+
+
   const handleSubmit = async(e) => {
     setErrors({
       name:"",
@@ -92,7 +96,7 @@ const Register = () => {
         general: ""
         });
             }
-            else{               
+            else{
               setErrors({
                 name:"",
                 email:"",
@@ -107,47 +111,59 @@ const Register = () => {
     }
 }
   return(
-    <form className='formulaire' onSubmit={handleSubmit}>
-      <label className='form-label'>Nom:</label><br/>
-      <input className={`form ${errors.name? "input-error":""}`} type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}/><br/>
-      {errors.name && (
-                <p className="error-message">{errors.name}</p>
-            )}
-      <label className='form-label'>Email:</label><br/>
-      <input className={`form ${errors.email? "input-error":""}`} type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}/><br/>
-      {errors.email && (
-                <p className="error-message">{errors.email}</p>
-            )}
-      <label className='form-label'>Mot de passe:</label><br/>
-      <input className={`form ${errors.password? "input-error":""}`} type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}/><br/>
-      {errors.password && (
-                <p className="error-message">{errors.password}</p>
-            )}
-      <label className='form-label'>Profil:</label><br/>
-      <textarea className={`form-area ${errors.profile? "input-error":""}`} value={form.profile} onChange={(e) => setForm({...form, profile: e.target.value})}/><br/>
-      {errors.profile && (
-                <p className="error-message">{errors.profile}</p>
-            )}
-      <label className='form-label'>Cadence de mise a jour:</label><br/>
-      <select
-      className={`form ${errors.update_rate? "input-error":""}`}
-        value={form.update_rate}
-        onChange={(e) =>
-          setForm({ ...form, update_rate: e.target.value })
-        }
-      >
-        <option value="">-- Sélectionner --</option>
-        <option value="weekly">Hebdomadairement</option>
-        <option value="monthly">Mensuellement</option>
-      </select><br/>
-      {errors.update_rate && (
-                <p className="error-message">{errors.update_rate}</p>
-            )}
-      <button className="btn" type="submit">S'inscrire</button> 
-      {errors.general && (
-                <p className="error-message">{errors.general}</p>
-            )}  
-    </form>
+    <>
+      <Header />
+      <div className="page">
+        <h2 style={{ textAlign: "center" }}>{t("register.title")}</h2>
+        <form className='formulaire card' onSubmit={handleSubmit}>
+          <label className='form-label'>{t("register.nameLabel")}</label><br/>
+          <input className={`form ${errors.name? "input-error":""}`} type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}/><br/>
+          {errors.name && (
+                    <p className="error-message">{errors.name}</p>
+                )}
+          <label className='form-label'>{t("register.emailLabel")}</label><br/>
+          <input className={`form ${errors.email? "input-error":""}`} type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}/><br/>
+          {errors.email && (
+                    <p className="error-message">{errors.email}</p>
+                )}
+          <label className='form-label'>{t("register.passwordLabel")}</label><br/>
+          <input className={`form ${errors.password? "input-error":""}`} type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}/><br/>
+          {errors.password && (
+                    <p className="error-message">{errors.password}</p>
+                )}
+          <div className="field-label-row">
+            <label className='form-label'>{t("register.profileLabel")}</label>
+            <HelpTooltip text={`${t("register.profileHelp")} ${t("register.profileExample")}`} />
+          </div>
+          <textarea className={`form-area ${errors.profile? "input-error":""}`} value={form.profile} onChange={(e) => setForm({...form, profile: e.target.value})}/><br/>
+          {errors.profile && (
+                    <p className="error-message">{errors.profile}</p>
+                )}
+          <div className="field-label-row">
+            <label className='form-label'>{t("register.rateLabel")}</label>
+            <HelpTooltip text={t("register.rateHelp")} />
+          </div>
+          <select
+          className={`form ${errors.update_rate? "input-error":""}`}
+            value={form.update_rate}
+            onChange={(e) =>
+              setForm({ ...form, update_rate: e.target.value })
+            }
+          >
+            <option value="">{t("register.rateSelect")}</option>
+            <option value="weekly">{t("register.rateWeekly")}</option>
+            <option value="monthly">{t("register.rateMonthly")}</option>
+          </select><br/>
+          {errors.update_rate && (
+                    <p className="error-message">{errors.update_rate}</p>
+                )}
+          <button className="btn btn-primary formulaire__submit" type="submit">{t("register.submitButton")}</button>
+          {errors.general && (
+                    <p className="error-message">{errors.general}</p>
+                )}
+        </form>
+      </div>
+    </>
   );
 };
 

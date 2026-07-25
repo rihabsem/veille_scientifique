@@ -1,0 +1,10 @@
+.userdata-card {
+    max-width: 480px;
+    margin: 24px auto;
+}
+
+.userdata-card input.form:disabled {
+    color: var(--text-muted);
+    background: var(--surface-muted);
+    cursor: not-allowed;
+}
