@@ -38,10 +38,14 @@ export default function Header({ userName }) {
 
   return (
     <header className="app-header">
-      <div className="app-header__brand">
-        <span className="app-header__logo" aria-hidden="true">VS</span>
+      <a className="app-header__brand" href="/dashboard">
+        <img
+          className="app-header__logo-img"
+          src="/hospital-logo.png"
+          alt={t("common.appName")}
+        />
         <span className="app-header__name">{t("common.appName")}</span>
-      </div>
+      </a>
 
       <div className="app-header__actions">
         {isAuthenticated && name && (
