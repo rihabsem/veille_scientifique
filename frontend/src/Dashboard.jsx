@@ -94,7 +94,7 @@ export default function Dashboard() {
             pollingInterval.current = null;
           }
         } else {
-          setError(err.response?.data?.detail || "Erreur lors du chargement");
+          setError(err.response?.data?.detail);
           setLoading(false);
         }
       }
