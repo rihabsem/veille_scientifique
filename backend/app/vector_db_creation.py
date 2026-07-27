@@ -123,8 +123,18 @@ def clear_users_collection():
         print(f"Supprimé {len(ids)} entrées de la collection users")
     else:
         print("Collection users déjà vide")
-
+def clear_articles_collection():
+    collection = get_articles_collection()
+    result = collection.get()
+    ids = result["ids"]
+    if ids:
+        collection.delete(ids=ids)
+        print(f"Supprimé {len(ids)} entrées de la collection articles")
+    else:
+        print("Collection users déjà vide")
 if __name__ == "__main__":
+    clear_articles_collection()
+    clear_users_collection()
     # id=26
     # embedding = search_user_embedding(str(id))
     # print(embedding)
@@ -134,9 +144,9 @@ if __name__ == "__main__":
 
     # print(res["ids"])
     # print(res["metadatas"])
-    collection = get_articles_collection()
+    # collection = get_articles_collection()
 
-    print(collection.get(ids=["NCT06946680"]))
+    # print(collection.get(ids=["NCT06946680"]))
 
     
 
