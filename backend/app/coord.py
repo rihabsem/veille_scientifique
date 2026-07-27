@@ -72,6 +72,7 @@ def first_search(db, user):
     last_updated_date = str(last_updated_date.strftime("%Y-%m-%d"))
     next_updated_date = str(date.strftime("%Y-%m-%d"))
     try:
+        update_search_status(user.id, "RUNNING")
         queries = db.query(Query).filter(Query.id_user == user.id).all()
         for query in queries:
                 if query.source == "PubMed":
