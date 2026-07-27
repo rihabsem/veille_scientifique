@@ -31,14 +31,15 @@ const SOURCES = [
 export default function Dashboard() {
   const { t } = useLanguage();
   const hasRun = useRef(false);
-  const pollingInterval = useRef(null);  // <-- ligne manquante ajoutée
+  const pollingInterval = useRef(null);
   const [results, setResults] = useState({
     semantic_scholar: [],
     clinical_trials: [],
     pubmed: []
   });
   const [loading, setLoading] = useState(true);
-  const [noUpdate, setNoUpdate] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [noResults, setNoResults] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -70,16 +71,27 @@ export default function Dashboard() {
         });
 
         setResults(categorized);
-        setNoUpdate(false);
+        setSearching(false);
+        setNoResults(false);
         setLoading(false);
 
         if (pollingInterval.current) clearInterval(pollingInterval.current);
       } catch (err) {
-        if (err.response?.status === 404) {
-          setNoUpdate(true);
+        if (err.response?.status === 202) {
+          // Recherche en cours -> on continue d'attendre
+          setSearching(true);
           setLoading(false);
           if (!pollingInterval.current) {
             pollingInterval.current = setInterval(fetchData, 15000);
+          }
+        } else if (err.response?.status === 404) {
+          // Recherche terminée, aucun résultat pertinent -> on arrête le polling
+          setSearching(false);
+          setNoResults(true);
+          setLoading(false);
+          if (pollingInterval.current) {
+            clearInterval(pollingInterval.current);
+            pollingInterval.current = null;
           }
         } else {
           setError(err.response?.data?.detail || "Erreur lors du chargement");
@@ -105,8 +117,13 @@ export default function Dashboard() {
           <Spinner />
         ) : error ? (
           <p className="error-message">{error}</p>
-        ) : noUpdate ? (
-          <p className="dashboard-empty">{t("dashboard.noUpdate")}</p>
+        ) : searching ? (
+          <>
+            <Spinner />
+            <p className="dashboard-empty">{t("dashboard.searchInProgress")}</p>
+          </>
+        ) : noResults ? (
+          <p className="dashboard-empty">{t("dashboard.noRelevantArticles")}</p>
         ) : (
           SOURCES.map((source) => (
             <section key={source.key} className="dashboard-section">
