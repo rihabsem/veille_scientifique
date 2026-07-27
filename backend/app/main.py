@@ -15,6 +15,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
 from app.email_service import send_email
+from app.database import SessionLocal
 
 
 scheduler = BackgroundScheduler()
@@ -178,7 +179,7 @@ def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user
         finally:
             db.close()
 
-    background_tasks.add_task(run_first_search)
+    BackgroundTasks.add_task(run_first_search)
     
 
 
