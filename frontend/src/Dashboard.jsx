@@ -31,6 +31,7 @@ const SOURCES = [
 export default function Dashboard() {
   const { t } = useLanguage();
   const hasRun = useRef(false);
+  const pollingInterval = useRef(null);  // <-- ligne manquante ajoutée
   const [results, setResults] = useState({
     semantic_scholar: [],
     clinical_trials: [],
@@ -40,60 +41,59 @@ export default function Dashboard() {
   const [noUpdate, setNoUpdate] = useState(false);
   const [error, setError] = useState(null);
 
-useEffect(() => {
-  if (hasRun.current) return;
-  hasRun.current = true;
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
 
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  const fetchData = async () => {
-    try {
-      const response = await API.get("/dashboard-data", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    const fetchData = async () => {
+      try {
+        const response = await API.get("/dashboard-data", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-      const categorized = {
-        semantic_scholar: [],
-        clinical_trials: [],
-        pubmed: []
-      };
+        const categorized = {
+          semantic_scholar: [],
+          clinical_trials: [],
+          pubmed: []
+        };
 
-      response.data.forEach((article) => {
-        if (article.source === "Semantic Scholar") {
-          categorized.semantic_scholar.push(article);
-        } else if (article.source === "Clinical Trials") {
-          categorized.clinical_trials.push(article);
-        } else if (article.source === "PubMed") {
-          categorized.pubmed.push(article);
-        }
-      });
+        response.data.forEach((article) => {
+          if (article.source === "Semantic Scholar") {
+            categorized.semantic_scholar.push(article);
+          } else if (article.source === "Clinical Trials") {
+            categorized.clinical_trials.push(article);
+          } else if (article.source === "PubMed") {
+            categorized.pubmed.push(article);
+          }
+        });
 
-      setResults(categorized);
-      setNoUpdate(false);
-      setLoading(false);
-
-      if (pollingInterval.current) clearInterval(pollingInterval.current);
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setNoUpdate(true);
+        setResults(categorized);
+        setNoUpdate(false);
         setLoading(false);
-        // Réessaie automatiquement toutes les 15 secondes
-        if (!pollingInterval.current) {
-          pollingInterval.current = setInterval(fetchData, 15000);
+
+        if (pollingInterval.current) clearInterval(pollingInterval.current);
+      } catch (err) {
+        if (err.response?.status === 404) {
+          setNoUpdate(true);
+          setLoading(false);
+          if (!pollingInterval.current) {
+            pollingInterval.current = setInterval(fetchData, 15000);
+          }
+        } else {
+          setError(err.response?.data?.detail || "Erreur lors du chargement");
+          setLoading(false);
         }
-      } else {
-        setError(err.response?.data?.detail || "Erreur lors du chargement");
-        setLoading(false);
       }
-    }
-  };
+    };
 
-  fetchData();
+    fetchData();
 
-  return () => {
-    if (pollingInterval.current) clearInterval(pollingInterval.current);
-  };
-}, []);
+    return () => {
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+    };
+  }, []);
 
   return (
     <>
