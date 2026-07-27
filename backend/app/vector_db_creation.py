@@ -87,7 +87,7 @@ def search_articles_for_user(user_id, k=20):
     results = collection.query(
         query_embeddings=[user_embedding],
         n_results=k,
-        where={"user_id": str(user_id)},
+        where={"user_id": user_id},
         include=["metadatas", "distances"]
     )
     print(f"chroma results : {results}")
