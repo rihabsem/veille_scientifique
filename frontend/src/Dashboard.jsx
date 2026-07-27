@@ -40,47 +40,60 @@ export default function Dashboard() {
   const [noUpdate, setNoUpdate] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
+useEffect(() => {
+  if (hasRun.current) return;
+  hasRun.current = true;
 
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const response = await API.get("/dashboard-data", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+  const token = localStorage.getItem("token");
 
-        const categorized = {
-          semantic_scholar: [],
-          clinical_trials: [],
-          pubmed: []
-        };
+  const fetchData = async () => {
+    try {
+      const response = await API.get("/dashboard-data", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-        response.data.forEach((article) => {
-          if (article.source === "Semantic Scholar") {
-            categorized.semantic_scholar.push(article);
-          } else if (article.source === "Clinical Trials") {
-            categorized.clinical_trials.push(article);
-          } else if (article.source === "PubMed") {
-            categorized.pubmed.push(article);
-          }
-        });
+      const categorized = {
+        semantic_scholar: [],
+        clinical_trials: [],
+        pubmed: []
+      };
 
-        setResults(categorized);
-      } catch (err) {
-        if (err.response?.status === 404) {
-          setNoUpdate(true);
-        } else {
-          setError(err.response?.data?.detail || "Erreur lors du chargement");
+      response.data.forEach((article) => {
+        if (article.source === "Semantic Scholar") {
+          categorized.semantic_scholar.push(article);
+        } else if (article.source === "Clinical Trials") {
+          categorized.clinical_trials.push(article);
+        } else if (article.source === "PubMed") {
+          categorized.pubmed.push(article);
         }
-      } finally {
+      });
+
+      setResults(categorized);
+      setNoUpdate(false);
+      setLoading(false);
+
+      if (pollingInterval.current) clearInterval(pollingInterval.current);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setNoUpdate(true);
+        setLoading(false);
+        // Réessaie automatiquement toutes les 15 secondes
+        if (!pollingInterval.current) {
+          pollingInterval.current = setInterval(fetchData, 15000);
+        }
+      } else {
+        setError(err.response?.data?.detail || "Erreur lors du chargement");
         setLoading(false);
       }
-    };
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+
+  return () => {
+    if (pollingInterval.current) clearInterval(pollingInterval.current);
+  };
+}, []);
 
   return (
     <>
