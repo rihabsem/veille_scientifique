@@ -2,7 +2,7 @@ from app.database import SessionLocal
 from app.models.query import Query
 from app.api_logic import pubmed_search, pubmed_fetch, semantic_scholar_search, clinical_trials_search, handle_response_clinical_trials, handle_result_pubmed, handle_result_semantic_scholar
 from app.vector_db_creation import delete_old_articles, search_articles_for_user
-from app.model import update_user_date, get_user_by_date, reset_email_sent
+from app.model import update_user_date, get_user_by_date, reset_email_sent, update_search_status
 import time
 from datetime import datetime, timedelta
 import re
@@ -60,7 +60,7 @@ def process_user(db, user):
 
 
 def first_search(db, user):
-    queries = db.query(Query).filter(Query.id_user == user.id).all()
+    update_search_status(user.id, "RUNNING")
     date = datetime.now()
     if user.weekly_monthly == "weekly":
         last_updated_date = date - timedelta(days=7)
@@ -71,30 +71,39 @@ def first_search(db, user):
         return None
     last_updated_date = str(last_updated_date.strftime("%Y-%m-%d"))
     next_updated_date = str(date.strftime("%Y-%m-%d"))
-    for query in queries:
-            if query.source == "PubMed":
-                last_updated_date_pubmed = re.sub("-", "/", last_updated_date)
-                next_updated_date_pubmed = re.sub("-", "/", next_updated_date)
-                pmids = pubmed_search(query.description, last_updated_date_pubmed, next_updated_date_pubmed)
-                time.sleep(3)
-                res_pubmed = pubmed_fetch(pmids)
-                if res_pubmed is not None:
-                    handle_result_pubmed(res_pubmed.text, user.id)
-                time.sleep(1)
-    
-            elif query.source == "Semantic Scholar":
-                res_semantic = semantic_scholar_search(query.description, last_updated_date, next_updated_date)
-                handle_result_semantic_scholar(res_semantic.json(), user.id)
-                time.sleep(1)
-    
-            elif query.source == "Clinical Trials":
-                res_clinical_trials = clinical_trials_search(query.description, last_updated_date, next_updated_date)
-                handle_response_clinical_trials(res_clinical_trials, user.id)
-                time.sleep(1)
-    
-            time.sleep(5)
-    resultats = search_articles_for_user(user.id)
-    print(f"resultats {resultats}")    
+    try:
+        queries = db.query(Query).filter(Query.id_user == user.id).all()
+        for query in queries:
+                if query.source == "PubMed":
+                    last_updated_date_pubmed = re.sub("-", "/", last_updated_date)
+                    next_updated_date_pubmed = re.sub("-", "/", next_updated_date)
+                    pmids = pubmed_search(query.description, last_updated_date_pubmed, next_updated_date_pubmed)
+                    time.sleep(3)
+                    res_pubmed = pubmed_fetch(pmids)
+                    if res_pubmed is not None:
+                        handle_result_pubmed(res_pubmed.text, user.id)
+                    time.sleep(1)
+        
+                elif query.source == "Semantic Scholar":
+                    res_semantic = semantic_scholar_search(query.description, last_updated_date, next_updated_date)
+                    handle_result_semantic_scholar(res_semantic.json(), user.id)
+                    time.sleep(1)
+        
+                elif query.source == "Clinical Trials":
+                    res_clinical_trials = clinical_trials_search(query.description, last_updated_date, next_updated_date)
+                    handle_response_clinical_trials(res_clinical_trials, user.id)
+                    time.sleep(1)
+        
+                time.sleep(5)
+        resultats = search_articles_for_user(user.id)
+        if len(resultats) == 0:
+                update_search_status(user.id, "NO_RESULTS")
+        else:
+                update_search_status(user.id, "DONE")
+
+    except Exception as e:
+        update_search_status(user.id, "ERROR")
+        print(e)  
     
     
     

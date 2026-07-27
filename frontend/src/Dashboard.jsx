@@ -82,7 +82,7 @@ export default function Dashboard() {
           setSearching(true);
           setLoading(false);
           if (!pollingInterval.current) {
-            pollingInterval.current = setInterval(fetchData, 15000);
+            pollingInterval.current = setInterval(fetchData, 5000);
           }
         } else if (err.response?.status === 404) {
           // Recherche terminée, aucun résultat pertinent -> on arrête le polling

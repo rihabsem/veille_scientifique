@@ -268,3 +268,23 @@ def reset_email_sent(user_id):
     finally:
         db.close()
 
+def update_search_status(user_id: int, status: str):
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            user.search_status = status
+            db.commit()
+    finally:
+        db.close()
+
+
+def get_search_status(user_id: int):
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            return user.search_status
+        return None
+    finally:
+        db.close()

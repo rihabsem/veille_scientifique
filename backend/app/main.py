@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
-from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, mark_email_sent, update_user_update_rate, update_user_profile
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, mark_email_sent, update_user_update_rate, update_user_profile, update_search_status
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
@@ -178,28 +178,44 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
             print(f"Erreur lors de la première recherche pour {user_id}: {e}")
         finally:
             db.close()
-
     background_tasks.add_task(run_first_search)
     
 
 
 @app.get("/dashboard-data")
 def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
+
     user = get_user_by_id(user_id)
+
     if user is None:
-        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+        raise HTTPException(404, "Utilisateur introuvable")
 
-    article_ids = search_articles_for_user(user_id)
-    if article_ids is None:
-        raise HTTPException(status_code=202, detail="Recherche en cours")
+    if user.search_status == "RUNNING":
+        raise HTTPException(
+            status_code=202,
+            detail="Recherche en cours"
+        )
 
-    if len(article_ids) == 0:
-        raise HTTPException(status_code=404, detail="Aucun article pertinent trouvé")
+    if user.search_status == "NO_RESULTS":
+        raise HTTPException(
+            status_code=404,
+            detail="Aucun article pertinent trouvé"
+        )
 
-    results = get_articles(article_ids, user_id)
-    print(results)
-    send_email(user.email, results)
-    mark_email_sent(user.id)
+    if user.search_status == "ERROR":
+        raise HTTPException(
+            status_code=500,
+            detail="Erreur durant la recherche"
+        )
+
+    article_ids = search_articles_for_user(user.id)
+
+    results = get_articles(article_ids, user.id)
+
+    if not user.email_sent:
+        send_email(user.email, results)
+        mark_email_sent(user.id)
+
     return results
 
 @app.get("/data")

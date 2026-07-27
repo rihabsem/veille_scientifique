@@ -16,6 +16,8 @@ class User(Base):
     next_updated_date = Column(String)  #format should be YYYY-MM-DD
     weekly_monthly = Column(String)
     email_sent = Column(Boolean, default=False)
+    search_status = Column(String, default="PENDING")
     articles = relationship("Article", back_populates="user_a")
     user_k = relationship("User_Keywords", back_populates="keyword_u")
     queries_user = relationship("Query", back_populates="users_query")
+    
