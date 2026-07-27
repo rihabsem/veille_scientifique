@@ -155,7 +155,7 @@ def get_me(user_id: int = Depends(get_current_user_id)):
     return response_json
 
 @app.post("/set-results")
-def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user_id)):
+def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
@@ -179,7 +179,7 @@ def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user
         finally:
             db.close()
 
-    BackgroundTasks.add_task(run_first_search)
+    background_tasks.add_task(run_first_search)
     
 
 
