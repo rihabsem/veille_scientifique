@@ -1,9 +1,9 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
 from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, get_articles_by_date, update_user_update_rate, update_user_profile
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
-from app.coord import run_batch
+from app.coord import run_batch, first_search
 from app.data_cleaning import clean_data, get_embedding
 from app.vector_db_creation import store_user_in_db, search_articles_for_user,update_user_embedding
 from fastapi.middleware.cors import CORSMiddleware
@@ -81,18 +81,6 @@ class SetResultsRequest(BaseModel):
 def test():
     
     return {"message": "Hello World"}
-
-@app.get("/run-coordinateur")
-def run_coordinateur():
-    try:
-        from app.coordinateur import run
-        run()
-        return {"status": "ok"}
-    except Exception as e:
-        return {
-            "status": "error",
-            "detail": str(e)
-        }
 
 @app.post("/login")
 def login(data: LoginRequest):
@@ -181,6 +169,17 @@ def set_results(data: SetResultsRequest, user_id: int = Depends(get_current_user
         launch_LLM(profile[0], user_id, answers)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
+    def run_first_search():
+        db = SessionLocal()
+        try:
+            first_search(db, user)
+        except Exception as e:
+            print(f"Erreur lors de la première recherche pour {user_id}: {e}")
+        finally:
+            db.close()
+
+    background_tasks.add_task(run_first_search)
+    
 
 
 @app.get("/dashboard-data")

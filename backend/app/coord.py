@@ -52,7 +52,47 @@ def process_user(db, user):
     user_last_updated_date = str(date.strftime("%Y-%m-%d"))
     user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
     update_user_date(user.id, user_next_updated_date, user_last_updated_date)
-    return resultats
+    # return resultats
+
+
+def first_search(db, user):
+    queries = db.query(Query).filter(Query.id_user == user.id).all()
+    date = datetime.now()
+    if user.weekly_monthly == "weekly":
+        last_updated_date = date - timedelta(days=7)
+    elif user.weekly_monthly == "monthly":
+        last_updated_date = date - timedelta(days=31)
+    else:
+        print(f"Utilisateur {user.id} : weekly_monthly invalide ({user.weekly_monthly})")
+        return None
+    last_updated_date = str(last_updated_date.strftime("%Y-%m-%d"))
+    next_updated_date = str(date.strftime("%Y-%m-%d"))
+    for query in queries:
+            if query.source == "PubMed":
+                last_updated_date_pubmed = re.sub("-", "/", last_updated_date)
+                next_updated_date_pubmed = re.sub("-", "/", next_updated_date)
+                pmids = pubmed_search(query.description, last_updated_date_pubmed, next_updated_date_pubmed)
+                time.sleep(3)
+                res_pubmed = pubmed_fetch(pmids)
+                if res_pubmed is not None:
+                    handle_result_pubmed(res_pubmed.text, user.id)
+                time.sleep(1)
+    
+            elif query.source == "Semantic Scholar":
+                res_semantic = semantic_scholar_search(query.description, last_updated_date, next_updated_date)
+                handle_result_semantic_scholar(res_semantic.json(), user.id)
+                time.sleep(1)
+    
+            elif query.source == "Clinical Trials":
+                res_clinical_trials = clinical_trials_search(query.description, last_updated_date, next_updated_date)
+                handle_response_clinical_trials(res_clinical_trials, user.id)
+                time.sleep(1)
+    
+            time.sleep(5)
+    
+    
+    
+    
 
 
 def run_batch():
