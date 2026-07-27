@@ -34,6 +34,7 @@ def get_users_collection():
 
 
 def store_embedding_in_db(article_id, full_embedding, user_id):
+    print(f"STORE -> article={article_id}, user={user_id}")
     collection = get_articles_collection()
     try:
         collection.add(
@@ -79,6 +80,7 @@ def search_articles_for_user(user_id, k=20):
     if user_embedding is None:
         print("No embedding found for user")
         return None
+    print(f"SEARCH -> user={user_id}")
     collection = get_articles_collection()
     print("Nombre d'articles :", collection.count())
     print(collection.get(where={"user_id": str(user_id)}))
@@ -122,10 +124,16 @@ def clear_users_collection():
     else:
         print("Collection users déjà vide")
 
-# if __name__ == "__main__":
-#     id=15
-#     embedding = search_user_embedding(str(id))
-#     print(embedding)
+if __name__ == "__main__":
+    id=26
+    embedding = search_user_embedding(str(id))
+    print(embedding)
+    collection = get_articles_collection()
+
+    res = collection.get(limit=5)
+
+    print(res["ids"])
+    print(res["metadatas"])
 
     
 
