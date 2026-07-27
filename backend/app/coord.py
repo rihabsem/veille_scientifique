@@ -2,7 +2,7 @@ from app.database import SessionLocal
 from app.models.query import Query
 from app.api_logic import pubmed_search, pubmed_fetch, semantic_scholar_search, clinical_trials_search, handle_response_clinical_trials, handle_result_pubmed, handle_result_semantic_scholar
 from app.vector_db_creation import delete_old_articles, search_articles_for_user
-from app.model import update_user_date, get_user_by_date
+from app.model import update_user_date, get_user_by_date, reset_email_sent
 import time
 from datetime import datetime, timedelta
 import re
@@ -55,6 +55,7 @@ def process_user(db, user):
     user_last_updated_date = str(date.strftime("%Y-%m-%d"))
     user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
     update_user_date(user.id, user_next_updated_date, user_last_updated_date)
+    reset_email_sent(user.id)
     # return resultats
 
 

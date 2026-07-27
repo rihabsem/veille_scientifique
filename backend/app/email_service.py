@@ -4,6 +4,7 @@ import os
 from email.message import EmailMessage
 from mistralai.client import Mistral
 
+
 EMAIL_ADDRESS = "researchserviceerasme@gmail.com"
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSKEY")
 
@@ -71,6 +72,7 @@ def send_email(to_email, articles):
             smtp.send_message(msg)
 
         print(f"Email sent successfully to {to_email}")
+        
 
     except Exception as e:
         print(f"Failed to send email: {e}")
