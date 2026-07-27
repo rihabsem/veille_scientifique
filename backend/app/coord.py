@@ -23,6 +23,7 @@ def process_user(db, user):
 
     for query in queries:
         if query.source == "PubMed":
+            print("PubMed")
             last_updated_date = re.sub("-", "/", user.last_updated_date)
             next_updated_date = re.sub("-", "/", user.next_updated_date)
             pmids = pubmed_search(query.description, last_updated_date, next_updated_date)
@@ -33,11 +34,13 @@ def process_user(db, user):
             time.sleep(1)
 
         elif query.source == "Semantic Scholar":
+            print("Semantic Scholar")
             res_semantic = semantic_scholar_search(query.description, user.last_updated_date, user.next_updated_date)
             handle_result_semantic_scholar(res_semantic.json(), user.id)
             time.sleep(1)
 
         elif query.source == "Clinical Trials":
+            print("Clinical Trials")
             res_clinical_trials = clinical_trials_search(query.description, user.last_updated_date, user.next_updated_date)
             handle_response_clinical_trials(res_clinical_trials, user.id)
             time.sleep(1)
