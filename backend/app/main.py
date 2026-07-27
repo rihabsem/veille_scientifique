@@ -195,7 +195,7 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
         )
 
     article_ids = search_articles_for_user(user.id)
-    ids = [id.split("-")[1] for id in article_ids]
+    ids = [id.split("_")[1] for id in article_ids]
     results = get_articles(ids, user.id)
 
     if not user.email_sent:
