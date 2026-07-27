@@ -93,7 +93,7 @@ def first_search(db, user):
     
             time.sleep(5)
     resultats = search_articles_for_user(user.id)
-    print(resultats)    
+    print(f"resultats {resultats}")    
     
     
     
