@@ -71,6 +71,9 @@ export const translations = {
       sourcePubmed: "PubMed",
       sourcePubmedHelp:
         "Base de données de référence en médecine et sciences de la vie, gérée par la Bibliothèque nationale de médecine des États-Unis.",
+      noResults : "Aucun article pertinent n'est trouvé.",
+      searchInProgress : "Search in progress",
+      noRelevantArticles : "Aucun article pertinent n'est trouvé.",
     },
     userdata: {
       title: "Profil utilisateur",
@@ -154,6 +157,9 @@ export const translations = {
       sourcePubmed: "PubMed",
       sourcePubmedHelp:
         "Leading database for medicine and life sciences, maintained by the US National Library of Medicine.",
+      noResults : "Aucun article pertinent n'est trouvé.",
+      searchInProgress : "Recherche en cours",
+      noRelevantArticles : "Aucun article pertinent n'est trouvé.",
     },
     userdata: {
       title: "User profile",
