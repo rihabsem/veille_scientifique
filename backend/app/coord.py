@@ -96,6 +96,7 @@ def first_search(db, user):
         
                 time.sleep(5)
         resultats = search_articles_for_user(user.id)
+        print(resultats)
         if len(resultats) == 0:
                 update_search_status(user.id, "NO_RESULTS")
         else:
