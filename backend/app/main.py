@@ -179,6 +179,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
         finally:
             db.close()
     background_tasks.add_task(run_first_search)
+    return {"status": "started"}
     
 
 
@@ -188,24 +189,9 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
 
     if user is None:
-        raise HTTPException(404, "Utilisateur introuvable")
-
-    if user.search_status == "RUNNING":
-        raise HTTPException(
-            status_code=202,
-            detail="Recherche en cours"
-        )
-
-    if user.search_status == "NO_RESULTS":
         raise HTTPException(
             status_code=404,
-            detail="Aucun article pertinent trouvé"
-        )
-
-    if user.search_status == "ERROR":
-        raise HTTPException(
-            status_code=500,
-            detail="Erreur durant la recherche"
+            detail="Utilisateur introuvable"
         )
 
     article_ids = search_articles_for_user(user.id)
@@ -224,6 +210,20 @@ def get_curent_user(user_id: int = Depends(get_current_user_id)):
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
     return user
+
+@app.get("/search-status")
+def search_status(user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Utilisateur introuvable"
+        )
+
+    return {
+        "status": user.search_status
+    }
 
 @app.post("/update")
 def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current_user_id)):

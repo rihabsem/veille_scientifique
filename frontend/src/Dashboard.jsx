@@ -42,70 +42,115 @@ export default function Dashboard() {
   const [noResults, setNoResults] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
 
     const token = localStorage.getItem("token");
 
-    const fetchData = async () => {
-      try {
-        const response = await API.get("/dashboard-data", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+    const loadDashboard = async () => {
 
-        const categorized = {
-          semantic_scholar: [],
-          clinical_trials: [],
-          pubmed: []
-        };
+        try {
 
-        response.data.forEach((article) => {
-          if (article.source === "Semantic Scholar") {
-            categorized.semantic_scholar.push(article);
-          } else if (article.source === "Clinical Trials") {
-            categorized.clinical_trials.push(article);
-          } else if (article.source === "PubMed") {
-            categorized.pubmed.push(article);
-          }
-        });
+            const statusResponse = await API.get("/search-status", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
-        setResults(categorized);
-        setSearching(false);
-        setNoResults(false);
-        setLoading(false);
+            const status = statusResponse.data.status;
 
-        if (pollingInterval.current) clearInterval(pollingInterval.current);
-      } catch (err) {
-        if (err.response?.status === 202) {
-          // Recherche en cours -> on continue d'attendre
-          setSearching(true);
-          setLoading(false);
-          if (!pollingInterval.current) {
-            pollingInterval.current = setInterval(fetchData, 5000);
-          }
-        } else if (err.response?.status === 404) {
-          // Recherche terminée, aucun résultat pertinent -> on arrête le polling
-          setSearching(false);
-          setNoResults(true);
-          setLoading(false);
-          if (pollingInterval.current) {
+            if (status === "RUNNING" || status === "PENDING") {
+
+                setSearching(true);
+                setLoading(false);
+
+                if (!pollingInterval.current) {
+
+                    pollingInterval.current = setInterval(loadDashboard, 5000);
+
+                }
+
+                return;
+            }
+
+            if (status === "NO_RESULTS") {
+
+                setSearching(false);
+                setNoResults(true);
+                setLoading(false);
+
+                clearInterval(pollingInterval.current);
+
+                return;
+            }
+
+            if (status === "ERROR") {
+
+                setError("Une erreur est survenue durant la recherche.");
+                setLoading(false);
+
+                clearInterval(pollingInterval.current);
+
+                return;
+            }
+
+            const response = await API.get("/dashboard-data", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const categorized = {
+                semantic_scholar: [],
+                clinical_trials: [],
+                pubmed: []
+            };
+
+            response.data.forEach((article) => {
+
+                if (article.source === "Semantic Scholar")
+                    categorized.semantic_scholar.push(article);
+
+                else if (article.source === "Clinical Trials")
+                    categorized.clinical_trials.push(article);
+
+                else if (article.source === "PubMed")
+                    categorized.pubmed.push(article);
+
+            });
+
+            setResults(categorized);
+
+            setSearching(false);
+            setLoading(false);
+
             clearInterval(pollingInterval.current);
-            pollingInterval.current = null;
-          }
-        } else {
-          setError(err.response?.data?.detail);
-          setLoading(false);
+
+        } catch (err) {
+
+            console.log(err);
+
+            setError(err.response?.data?.detail || "Erreur lors du chargement");
+
+            setLoading(false);
+
+            clearInterval(pollingInterval.current);
+
         }
-      }
+
     };
 
-    fetchData();
+    loadDashboard();
 
     return () => {
-      if (pollingInterval.current) clearInterval(pollingInterval.current);
+
+        if (pollingInterval.current)
+            clearInterval(pollingInterval.current);
+
     };
-  }, []);
+
+}, []);
 
   return (
     <>
