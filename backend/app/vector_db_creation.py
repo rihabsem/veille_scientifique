@@ -37,7 +37,7 @@ def store_embedding_in_db(article_id, full_embedding, user_id):
     collection = get_articles_collection()
     try:
         collection.add(
-            ids=[article_id],
+            ids=[str(article_id)],
             embeddings=[full_embedding],
             metadatas=[{"user_id" : user_id}]
         )
@@ -79,14 +79,16 @@ def search_articles_for_user(user_id, k=20):
     if user_embedding is None:
         print("No embedding found for user")
         return None
-
     collection = get_articles_collection()
-
+    print("Nombre d'articles :", collection.count())
+    print(collection.get(where={"user_id": str(user_id)}))
     results = collection.query(
         query_embeddings=[user_embedding],
         n_results=k,
-        where={"user_id": user_id}
+        where={"user_id": str(user_id)},
+        include=["metadatas", "distances"]
     )
+    print(f"chroma results : {results}")
     return (results["ids"][0])
 
 def delete_old_articles(user_id):
