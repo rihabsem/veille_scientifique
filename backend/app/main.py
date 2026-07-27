@@ -179,7 +179,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
         finally:
             db.close()
 
-    background_tasks.add_task(run_first_search)
+    run_first_search
     
 
 
