@@ -68,9 +68,9 @@ const Register = () => {
     if (!form.update_rate.trim()) {
       newErrors.update_rate = "Veuillez remplir tous les champs.";
     }
-    // if (!isValidEmail(form.email)) {
-    //     newErrors.email="Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)";
-    // }
+    if (!isValidEmail(form.email)) {
+        newErrors.email="Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)";
+    }
     if(!isValidPassword(form.password)){
       newErrors.password="Le mot de passe doit être d'une longeur minimal de 8 caractères"
     }
