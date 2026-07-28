@@ -192,21 +192,21 @@ def launch_LLM(user_profile, id_user, responses):
         insert_query(r["clinical_trials"], "Clinical Trials", id_user)
   
 
-if __name__ == "__main__":
-  responses=[]
-  user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
+# if __name__ == "__main__":
+#   responses=[]
+#   user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
   
-  user_profile_treatment(user_profile,1)
-  response = profile_refinement(user_profile)
-  print(response)
-  responses = []
-  for r in response:
-    print(r)
-    response = input("")
-    responses.append(response)
+#   user_profile_treatment(user_profile,1)
+#   response = profile_refinement(user_profile)
+#   print(response)
+#   responses = []
+#   for r in response:
+#     print(r)
+#     response = input("")
+#     responses.append(response)
 
-  res = query_generation(user_profile, responses)
-  print(res)
+#   res = query_generation(user_profile, responses)
+#   print(res)
 
 
 #   res = """
