@@ -11,7 +11,7 @@ import re
 
 def process_user(db, user):
     delete_old_articles(user.id)
-    queries = db.query(Query).filter(Query.id_user == user.id).all()
+    
 
     if user.weekly_monthly == "weekly":
         days_to_add = 7
@@ -20,36 +20,44 @@ def process_user(db, user):
     else:
         print(f"Utilisateur {user.id} : weekly_monthly invalide ({user.weekly_monthly})")
         return None
+    try:
+        update_search_status(user.id, "RUNNING")
+        queries = db.query(Query).filter(Query.id_user == user.id).all()
+        for query in queries:
+            if query.source == "PubMed":
+                print("PubMed")
+                last_updated_date = re.sub("-", "/", user.last_updated_date)
+                next_updated_date = re.sub("-", "/", user.next_updated_date)
+                pmids = pubmed_search(query.description, last_updated_date, next_updated_date)
+                time.sleep(3)
+                res_pubmed = pubmed_fetch(pmids)
+                if res_pubmed is not None:
+                    handle_result_pubmed(res_pubmed.text, user.id)
+                time.sleep(1)
 
-    for query in queries:
-        if query.source == "PubMed":
-            print("PubMed")
-            last_updated_date = re.sub("-", "/", user.last_updated_date)
-            next_updated_date = re.sub("-", "/", user.next_updated_date)
-            pmids = pubmed_search(query.description, last_updated_date, next_updated_date)
-            time.sleep(3)
-            res_pubmed = pubmed_fetch(pmids)
-            if res_pubmed is not None:
-                handle_result_pubmed(res_pubmed.text, user.id)
-            time.sleep(1)
+            elif query.source == "Semantic Scholar":
+                print("Semantic Scholar")
+                res_semantic = semantic_scholar_search(query.description, user.last_updated_date, user.next_updated_date)
+                handle_result_semantic_scholar(res_semantic.json(), user.id)
+                time.sleep(1)
 
-        elif query.source == "Semantic Scholar":
-            print("Semantic Scholar")
-            res_semantic = semantic_scholar_search(query.description, user.last_updated_date, user.next_updated_date)
-            handle_result_semantic_scholar(res_semantic.json(), user.id)
-            time.sleep(1)
+            elif query.source == "Clinical Trials":
+                print("Clinical Trials")
+                res_clinical_trials = clinical_trials_search(query.description, user.last_updated_date, user.next_updated_date)
+                handle_response_clinical_trials(res_clinical_trials, user.id)
+                time.sleep(1)
 
-        elif query.source == "Clinical Trials":
-            print("Clinical Trials")
-            res_clinical_trials = clinical_trials_search(query.description, user.last_updated_date, user.next_updated_date)
-            handle_response_clinical_trials(res_clinical_trials, user.id)
-            time.sleep(1)
-
-        time.sleep(5)
-    print("1")
-    resultats = search_articles_for_user(user.id)
-    print("2")
-    print(f"the search results for user {user.id} are {resultats}")
+            time.sleep(5)
+        resultats = search_articles_for_user(user.id)
+        print(resultats)
+        if len(resultats) == 0:
+            update_search_status(user.id, "NO_RESULTS")
+        else:
+            update_search_status(user.id, "DONE")
+        print(f"the search results for user {user.id} are {resultats}")
+    except Exception as e:
+        update_search_status(user.id, "ERROR")
+        print(e) 
     date = datetime.now()
     date_next = date + timedelta(days=days_to_add)
     user_last_updated_date = str(date.strftime("%Y-%m-%d"))
@@ -97,7 +105,7 @@ def first_search(db, user):
         
                 time.sleep(5)
         resultats = search_articles_for_user(user.id)
-        print(resultats)
+        print(f"les résultats sont :{resultats}")
         if len(resultats) == 0:
                 update_search_status(user.id, "NO_RESULTS")
         else:
