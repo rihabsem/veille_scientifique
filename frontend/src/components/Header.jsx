@@ -41,7 +41,7 @@ export default function Header({ userName }) {
       <a className="app-header__brand" href="/dashboard">
         <img
           className="app-header__logo-img"
-          src={logo}
+          src="/hospital-logo.png"
           alt={t("common.appName")}
         />
         <span className="app-header__name">{t("common.appName")}</span>
