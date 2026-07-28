@@ -7,7 +7,7 @@ from app.coord import run_batch, first_search
 from app.data_cleaning import clean_data, get_embedding
 from app.vector_db_creation import store_user_in_db, search_articles_for_user,update_user_embedding
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel,Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 from datetime import datetime, timedelta
 import re
@@ -63,15 +63,15 @@ class RegisterRequest(BaseModel):
     password : str = Field(min_length=8)
     profile : str = Field(min_length=1)
     update_rate : Literal["weekly", "monthly"]
-    # @field_validator("email")
-    # @classmethod
-    # def validate_email(cls, value):
-    #     pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
-    #     if not re.match(pattern, value):
-    #         raise ValueError(
-    #             "L'adresse email doit appartenir au domaine @ulb.be"
-    #         )
-    #     return value
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value):
+        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+        if not re.match(pattern, value):
+            raise ValueError(
+                "L'adresse email doit appartenir au domaine @ulb.be"
+            )
+        return value
 
 class SetResultsRequest(BaseModel):
     question1: str = Field(min_length=1)
