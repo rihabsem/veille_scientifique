@@ -78,7 +78,22 @@ def send_email(to_email, articles):
         print(f"Failed to send email: {e}")
 
 
+def send_reset_email(to_email, reset_link):
+    msg = EmailMessage()
+    msg["Subject"] = "Réinitialisation de votre mot de passe"
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = to_email
+    msg.set_content(f"""
+    Vous avez demandé la réinitialisation de votre mot de passe.
+    Cliquez sur ce lien pour choisir un nouveau mot de passe (valable 1 heure) :
+    {reset_link}
 
+    Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
+    """)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
 
 # if __name__ == "__main__":
 #     send_email(

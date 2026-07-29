@@ -6,3 +6,4 @@ def verify_password(password, hashed_password):
 
 def hash_password(password):
     return pwd_context.hash(password)
+

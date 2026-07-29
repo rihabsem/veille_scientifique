@@ -150,6 +150,9 @@ export default function Login() {
                     <button className="btn btn-primary formulaire__submit" type="submit">
                         {t("login.loginButton")}
                     </button>
+                    <a className="reset-password" href="/mot-de-passe-oublier">
+                            {t("login.mdpOublier")}
+                        </a>
 
                     {errors.general && (
                         <p className="error-message">{errors.general}</p>

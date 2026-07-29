@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
-from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, mark_email_sent, update_user_update_rate, update_user_profile, update_search_status
+from app.model import get_user,insert_user,get_user_by_id, get_user_profile, get_articles, mark_email_sent, update_user_update_rate, update_user_profile, create_reset_token, mark_token_used, verify_reset_token, update_user_password
 from app.auth import create_access_token, get_current_user_id
 from app.password import verify_password, hash_password
 from app.user_query import profile_refinement, launch_LLM
@@ -14,11 +14,13 @@ import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
-from app.email_service import send_email
+from app.email_service import send_email, send_reset_email
 from app.database import SessionLocal
+import os
 
 
 scheduler = BackgroundScheduler()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,15 +45,6 @@ app.add_middleware(
 class LoginRequest(BaseModel):
     email: str 
     password: str
-    # @field_validator("email")
-    # @classmethod
-    # def validate_email(cls, value):
-    #     pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
-    #     if not re.match(pattern, value):
-    #         raise ValueError(
-    #             "L'adresse email doit appartenir au domaine @ulb.be"
-    #         )
-    #     return value
 
 class updateRequest(BaseModel):
     profile : str = Field(min_length=1)
@@ -77,6 +70,13 @@ class SetResultsRequest(BaseModel):
     question1: str = Field(min_length=1)
     question2: str = Field(min_length=1)
     question3: str = Field(min_length=1)
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8)
 
 @app.get("/chroma-db")
 def test():
@@ -242,6 +242,27 @@ def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current
 
     return {"status": "ok"}
     
-    
+@app.post("/forgot-password")
+def forgot_password(data: ForgotPasswordRequest):
+    user = get_user(data.email)
+    if user is None:
+        return {"status": "ok"}
+    url = os.getenv("RESET_PASSWORD_URL")
+    token = create_reset_token(user.id)
+    reset_link = f"{url}reset-password?token={token}"
 
-    
+    send_reset_email(user.email, reset_link)
+
+    return {"status": "ok"}
+
+@app.post("/reset-password")
+def reset_password(data: ResetPasswordRequest):
+    user_id = verify_reset_token(data.token)
+    if user_id is None:
+        raise HTTPException(status_code=400, detail="Token invalide ou expiré")
+
+    new_hashed = hash_password(data.new_password)
+    update_user_password(user_id, new_hashed)
+    mark_token_used(data.token)
+
+    return {"status": "ok"}

@@ -5,6 +5,8 @@ import Register from './Register';
 import Questions from './Questions'; 
 import PrivateRoute from './PrivateRoute'; 
 import UserData from './UserData';
+import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 
 function App() {
   return (
@@ -29,6 +31,19 @@ function App() {
           </PrivateRoute>
         }/>
       </Routes>
+
+      <Route path="/mot-de-passe-oublier" 
+        element={
+          <PrivateRoute>
+            <ForgotPassword />
+          </PrivateRoute>
+        } />
+        <Route path="/mot-de-passe-reinitier" 
+        element={
+          <PrivateRoute>
+            <ResetPassword />
+          </PrivateRoute>
+        } />
     </BrowserRouter>
   );
 }

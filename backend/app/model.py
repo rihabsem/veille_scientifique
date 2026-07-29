@@ -2,10 +2,12 @@ from app.models.articles import Article
 from app.models.users import User
 from app.models.keywords import Keyword
 from app.models.query import Query
+from app.models.passwordReset import PasswordResetToken
 from app.database import SessionLocal
 from datetime import datetime, timedelta
 from sqlalchemy import func
 import re
+import secrets
 
 
 def insert_article(id, title, abstract, id_user, source):
@@ -286,5 +288,61 @@ def get_search_status(user_id: int):
         if user:
             return user.search_status
         return None
+    finally:
+        db.close()
+
+def create_reset_token(user_id):
+    db = SessionLocal()
+    try:
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now() + timedelta(hours=1)
+        reset_entry = PasswordResetToken(
+            user_id=user_id,
+            token=token,
+            expires_at=expires_at
+        )
+        db.add(reset_entry)
+        db.commit()
+        return token
+    finally:
+        db.close()
+
+def verify_reset_token(token):
+    db = SessionLocal()
+    try:
+        entry = db.query(PasswordResetToken).filter(
+            PasswordResetToken.token == token,
+            PasswordResetToken.used == 0
+        ).first()
+        if entry is None:
+            return None
+        if entry.expires_at < datetime.now():
+            return None
+        return entry.user_id
+    finally:
+        db.close()
+
+def mark_token_used(token):
+    db = SessionLocal()
+    try:
+        entry = db.query(PasswordResetToken).filter(
+            PasswordResetToken.token == token
+        ).first()
+        if entry:
+            entry.used = 1
+            db.commit()
+    finally:
+        db.close()
+
+def update_user_password(user_id, new_hashed_password):
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            user.hashed_password = new_hashed_password
+            db.commit()
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()

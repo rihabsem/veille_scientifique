@@ -33,6 +33,7 @@ export const translations = {
       loginButton: "Login",
       noAccount: "Pas encore de compte ?",
       registerCta: "Créer un compte",
+      mpdOublier: "mot de passe oublier",
     },
     register: {
       title: "Créer votre profil de veille",
@@ -119,6 +120,7 @@ export const translations = {
       loginButton: "Login",
       noAccount: "Don't have an account yet?",
       registerCta: "Create an account",
+      mpdOublier: "forgot password",
     },
     register: {
       title: "Create your research profile",
