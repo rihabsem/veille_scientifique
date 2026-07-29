@@ -31,17 +31,9 @@ function App() {
           </PrivateRoute>
         }/>
         <Route path="/mot-de-passe-oublier" 
-        element={
-          <PrivateRoute>
-            <ForgotPassword />
-          </PrivateRoute>
-        } />
+        element={<ForgotPassword />} />
         <Route path="/mot-de-passe-reinitier" 
-        element={
-          <PrivateRoute>
-            <ResetPassword />
-          </PrivateRoute>
-        } />
+        element={<ResetPassword />} />
       </Routes>
 
       

@@ -151,7 +151,7 @@ export default function Login() {
                         {t("login.loginButton")}
                     </button>
                     <a className="reset-password" href="/mot-de-passe-oublier">
-                            {t("login.mdpOublier")}
+                            {t("login.mpdOublier")}
                         </a>
 
                     {errors.general && (
