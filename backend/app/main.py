@@ -247,9 +247,8 @@ def forgot_password(data: ForgotPasswordRequest):
     user = get_user(data.email)
     if user is None:
         return {"status": "ok"}
-    url = os.getenv("RESET_PASSWORD_URL")
     token = create_reset_token(user.id)
-    reset_link = f"{url}reset-password?token={token}"
+    reset_link = f"https://veille-scientifique.vercel.app/reset-password?token={token}"
 
     send_reset_email(user.email, reset_link)
 
