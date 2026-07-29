@@ -32,7 +32,7 @@ function App() {
         }/>
         <Route path="/mot-de-passe-oublier" 
         element={<ForgotPassword />} />
-        <Route path="/mot-de-passe-reinitier" 
+        <Route path="/reset-password" 
         element={<ResetPassword />} />
       </Routes>
 
