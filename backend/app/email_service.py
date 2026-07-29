@@ -91,7 +91,7 @@ def send_reset_email(to_email, reset_link):
     Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
     """)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 587) as smtp:
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
