@@ -30,9 +30,7 @@ function App() {
             <UserData/>
           </PrivateRoute>
         }/>
-      </Routes>
-
-      <Route path="/mot-de-passe-oublier" 
+        <Route path="/mot-de-passe-oublier" 
         element={
           <PrivateRoute>
             <ForgotPassword />
@@ -44,6 +42,9 @@ function App() {
             <ResetPassword />
           </PrivateRoute>
         } />
+      </Routes>
+
+      
     </BrowserRouter>
   );
 }
