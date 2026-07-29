@@ -23,6 +23,7 @@ from app.models.users import User
 from app.models.articles import Article
 from app.models.query import Query
 from app.models.user_keywords import User_Keywords
+from app.models.passwordReset import PasswordResetToken
 
 target_metadata = Base.metadata
 
