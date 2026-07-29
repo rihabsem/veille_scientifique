@@ -84,21 +84,20 @@ def send_reset_email(to_email, reset_link):
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = to_email
     msg.set_content(f"""
-    Vous avez demandé la réinitialisation de votre mot de passe.
-    Cliquez sur ce lien pour choisir un nouveau mot de passe (valable 1 heure) :
-    {reset_link}
+Vous avez demandé la réinitialisation de votre mot de passe.
 
-    Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
-    """)
+Cliquez sur ce lien :
+{reset_link}
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
+""")
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        smtp.starttls()
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
-# if __name__ == "__main__":
-#     send_email(
-#         to_email="rihabalx@gmail.com"
-#     )
+
 
 
 
