@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./backend
+    image: code-backend:latest
     container_name: fastapi_backend
     restart: always
     env_file:
