@@ -67,23 +67,29 @@ export default function ResetPassword() {
 
     if (!token) {
         return (
+            <>
+            <Header />
             <div className="formulaire">
                 <p className="error-message">
                     Lien de réinitialisation invalide ou incomplet.
                 </p>
                 <Link to="/forgot-password">Demander un nouveau lien</Link>
             </div>
+            </>
         );
     }
 
     if (success) {
         return (
+            <>
+            <Header />
             <div className="formulaire">
                 <p>
                     Votre mot de passe a été réinitialisé avec succès.
                     Vous allez être redirigé vers la page de connexion...
                 </p>
             </div>
+            </>
         );
     }
 
