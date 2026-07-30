@@ -88,6 +88,8 @@ export default function ResetPassword() {
     }
 
     return (
+        <>
+        <Header />
         <form className="formulaire" onSubmit={handleSubmit}>
             <h2>Réinitialiser le mot de passe</h2>
 
@@ -119,5 +121,6 @@ export default function ResetPassword() {
 
             {errors.general && <p className="error-message">{errors.general}</p>}
         </form>
+        </>
     );
 }
