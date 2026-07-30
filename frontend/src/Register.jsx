@@ -28,7 +28,7 @@ const Register = () => {
 
   const navigate = useNavigate();
   const isValidEmail = (email) => {
-        const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+@ulb.be$/
+        const emailRegex = /^[A-Za-z]+\.[A-Za-z]+@[A-Za-z0-9-]+\.[A-Za-z]+$/
         return emailRegex.test(email);
     }
   const isValidPassword = (password) => {
@@ -69,7 +69,7 @@ const Register = () => {
       newErrors.update_rate = "Veuillez remplir tous les champs.";
     }
     if (!isValidEmail(form.email)) {
-        newErrors.email="Veuillez utiliser un email valide de l'ULB (ex:prenom.nom@ulb.be)";
+        newErrors.email="Veuillez utiliser un email valide";
     }
     if(!isValidPassword(form.password)){
       newErrors.password="Le mot de passe doit être d'une longeur minimal de 8 caractères"

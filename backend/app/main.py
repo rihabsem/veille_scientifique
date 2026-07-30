@@ -59,10 +59,10 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def validate_email(cls, value):
-        pattern = r"^[A-Za-z]+\.[A-Za-z]+@ulb\.be$"
+        pattern = r"^[A-Za-z]+\.[A-Za-z]+@[A-Za-z0-9-]+\.[A-Za-z]+$"
         if not re.match(pattern, value):
             raise ValueError(
-                "L'adresse email doit appartenir au domaine @ulb.be"
+                "L'adresse email n'est pas valide"
             )
         return value
 
