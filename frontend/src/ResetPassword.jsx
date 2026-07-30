@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import API from "./api";
 import "./css/login.css";
+import Header from "./components/Header";
+import HelpTooltip from "./components/HelpTooltip";
+import Spinner from "./components/Spinner";
+import { useLanguage } from "./i18n/LanguageContext";
 
 export default function ResetPassword() {
     const [searchParams] = useSearchParams();

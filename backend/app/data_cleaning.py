@@ -10,7 +10,7 @@ def clean_data(data):
     data = data.lower()
     translator = str.maketrans('','',string.punctuation)
     data = data.translate(translator)
-    data = re.sub('\s+', '', data)
+    data = re.sub('\s+', ' ', data)
     return data 
 
 def get_embedding(data):
