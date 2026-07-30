@@ -52,6 +52,7 @@ export const translations = {
       rateMonthly: "Mensuellement",
       rateSelect: "-- Sélectionner --",
       submitButton: "S'inscrire",
+      passwordCaracters : "Caractères autorisés: a-z A-Z 0-9 @ - _",
     },
     questions: {
       title: "Quelques questions pour affiner votre profil",
@@ -139,6 +140,7 @@ export const translations = {
       rateMonthly: "Monthly",
       rateSelect: "-- Select --",
       submitButton: "Sign up",
+      passwordCaracters : "Allowed characters: a-z A-Z 0-9@ - _",
     },
     questions: {
       title: "A few questions to refine your profile",

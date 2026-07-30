@@ -122,12 +122,12 @@ const Register = () => {
                     <p className="error-message">{errors.name}</p>
                 )}
           <label className='form-label'>{t("register.emailLabel")}</label><br/>
-          <input className={`form ${errors.email? "input-error":""}`} type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}/><br/>
+          <input className={`form ${errors.email? "input-error":""}`} type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} placeholder="prenom.nom@ulb.be"/><br/>
           {errors.email && (
                     <p className="error-message">{errors.email}</p>
                 )}
           <label className='form-label'>{t("register.passwordLabel")}</label><br/>
-          <input className={`form ${errors.password? "input-error":""}`} type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}/><br/>
+          <input placeholder={t("register.passwordCaracters")} className={`form ${errors.password? "input-error":""}`} type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}/><br/>
           {errors.password && (
                     <p className="error-message">{errors.password}</p>
                 )}
