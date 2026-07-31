@@ -18,3 +18,5 @@ resend
 pytest
 httpx
 json-repair
+gunicorn
+uvicorn
