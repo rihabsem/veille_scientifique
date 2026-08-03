@@ -1,6 +1,6 @@
 services:
   backend:
-  build:
+    build:
     context: ./backend
     image: code-backend:latest
     container_name: fastapi_backend
