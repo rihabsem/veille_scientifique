@@ -1,5 +1,7 @@
 services:
   backend:
+  build:
+    context: ./backend
     image: code-backend:latest
     container_name: fastapi_backend
     restart: always
@@ -22,6 +24,10 @@ services:
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: veille_db
 
   chroma:
     image: chromadb/chroma
