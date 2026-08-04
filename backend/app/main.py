@@ -85,6 +85,7 @@ def test():
 
 @app.post("/login")
 def login(data: LoginRequest):
+    print("Login request received:", data)
     user = get_user(data.email)
     if user is None:
         raise HTTPException(
