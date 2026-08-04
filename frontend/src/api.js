@@ -3,7 +3,7 @@ import axios from "axios";
 const API = axios.create({
     baseURL: "https://research.lphys-ulb.net", 
     //this should be localhost 8000
-    withCredentials: true,//added this
+    // withCredentials: true,//added this
   headers: {//added this
     'ngrok-skip-browser-warning': 'true',//added this
   }, //added this
