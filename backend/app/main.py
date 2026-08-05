@@ -16,7 +16,7 @@ from apscheduler.triggers.cron import CronTrigger
 from contextlib import asynccontextmanager
 from app.email_service import send_email, send_reset_email
 from app.database import SessionLocal
-import os
+from app.search_queue import search_queue
 
 
 scheduler = BackgroundScheduler()
@@ -182,7 +182,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
             print(f"Erreur lors de la première recherche pour {user_id}: {e}")
         finally:
             db.close()
-    background_tasks.add_task(run_first_search)
+    search_queue.put(user.id)
     return {"status": "started"}
     
 
