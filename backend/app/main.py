@@ -62,7 +62,7 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def validate_email(cls, value):
-        pattern = r"^[A-Za-z]+\.[A-Za-z]+@[A-Za-z0-9-]+\.[A-Za-z]+$"
+        pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
         if not re.match(pattern, value):
             raise ValueError(
                 "L'adresse email n'est pas valide"

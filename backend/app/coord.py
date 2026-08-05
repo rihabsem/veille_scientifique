@@ -11,8 +11,6 @@ import re
 
 def process_user(db, user):
     delete_old_articles(user.id)
-    
-
     if user.weekly_monthly == "weekly":
         days_to_add = 7
     elif user.weekly_monthly == "monthly":
