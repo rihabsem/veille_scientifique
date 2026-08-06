@@ -3,6 +3,8 @@ services:
     build:
       context: ./backend
     image: code-backend:latest
+    volumes:
+      - ./backend:/app
     container_name: fastapi_backend
     restart: always
     env_file:

@@ -1,6 +1,8 @@
 services:
   backend:
     build: ./backend
+    volumes:
+    - ./backend:/app
     container_name: fastapi_backend
     restart: always
     env_file:
