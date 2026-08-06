@@ -6,9 +6,22 @@ from mistralai.client import Mistral
 import json
 from json_repair import repair_json
 import re
+import csv
+from datetime import datetime
+from pathlib import Path
 
-#1_ clean the data
-# 2_ send the query to the api
+LOG_FILE = "mistral_usage.csv"
+
+if not Path(LOG_FILE).exists():
+    with open(LOG_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "timestamp",
+            "nom_fonction",
+            "prompt_tokens",
+            "completion_tokens",
+            "total_tokens"
+        ])
 
 def profile_refinement(user_profile):
   query = f"""
@@ -60,6 +73,8 @@ def profile_refinement(user_profile):
           {"role":"user", "content":query}
       ],
   )
+  usage = response.usage
+  csv_writer(usage, "profile refinement")
   questions = response.choices[0].message.content
   questions = re.sub(r"```json|```","",questions).strip()
   questions = json.loads(questions)
@@ -144,19 +159,19 @@ def  query_generation(user_profile, user_answers):
 
 Each element must be a dictionary with the following structure:
 
-{{
-  "id": integer,
-  "semantic_scholar": string,
-  "pubmed": string,
-  "clinical_trials": string
-}}
+  {{
+    "id": integer,
+    "semantic_scholar": string,
+    "pubmed": string,
+    "clinical_trials": string
+  }}
 
-RULES:
-- Do not include explanations
-- Do not include markdown
-- Do not duplicate queries
-- Ensure diversity across queries
-- I want EXACTLY 5 queries
+  RULES:
+  - Do not include explanations
+  - Do not include markdown
+  - Do not duplicate queries
+  - Ensure diversity across queries
+  - I want EXACTLY 5 queries
   """
   client = Mistral(api_key=os.environ["MISTRAL_KEY"])
   response = client.chat.complete(
@@ -165,6 +180,8 @@ RULES:
           {"role":"user", "content":query}
       ],
   )
+  usage = response.usage
+  csv_writer(usage, "query generation")
   return response.choices[0].message.content
 
 def user_profile_treatment(user_profile, user_id):
@@ -190,7 +207,17 @@ def launch_LLM(user_profile, id_user, responses):
         insert_query(r["semantic_scholar"], "Semantic Scholar", id_user)
         insert_query(r["pubmed"], "PubMed", id_user)
         insert_query(r["clinical_trials"], "Clinical Trials", id_user)
-  
+
+def csv_writer(usage, function_name):
+    with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().isoformat(),
+            function_name,
+            usage.prompt_tokens,
+            usage.completion_tokens,
+            usage.total_tokens
+        ])
 
 # if __name__ == "__main__":
 #   responses=[]

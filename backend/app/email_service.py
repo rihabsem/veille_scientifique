@@ -3,10 +3,24 @@ import os
 # import resend
 from email.message import EmailMessage
 from mistralai.client import Mistral
-
+import csv
+from datetime import datetime
+from pathlib import Path
 
 EMAIL_ADDRESS = "researchserviceerasme@gmail.com"
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSKEY")
+
+LOG_FILE = "mistral_email_usage.csv"
+
+if not Path(LOG_FILE).exists():
+    with open(LOG_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "timestamp",
+            "prompt_tokens",
+            "completion_tokens",
+            "total_tokens"
+        ])
 
 def generate_email(articles):
     if not articles:
@@ -48,6 +62,15 @@ def generate_email(articles):
             {"role":"user", "content":query}
         ],
     )
+    usage = response.usage
+    with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().isoformat(),
+            usage.prompt_tokens,
+            usage.completion_tokens,
+            usage.total_tokens
+        ])
     return response.choices[0].message.content
 
 def send_email(to_email, articles):

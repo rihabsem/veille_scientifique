@@ -15,16 +15,6 @@ search_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 semantic_url = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
 clinical_trials_url = "https://clinicaltrials.gov/api/v2/studies"
-# def pubmed_search(query, min_date, max_date):
-#     params = {
-#     "db": "pubmed",
-#     "term": query,
-#     "datetype": "pdat",
-#     "mindate": min_date,
-#     "maxdate": max_date,
-#     "retmode": "json"
-#     }
-#     return requests.get(search_url, params=params).json()["esearchresult"]["idlist"]
 
 def pubmed_search(query, min_date, max_date):
 
@@ -56,8 +46,6 @@ def pubmed_search(query, min_date, max_date):
 
     except Exception as e:
         print("\n[DEBUG] JSON PARSE FAILED:", str(e))
-
-    # 2. fallback XML
     try:
         print("\n[DEBUG] TRYING XML PARSE...")
         root = ET.fromstring(raw)
@@ -122,42 +110,6 @@ def handle_result_pubmed(results, user_id):
         insert_article(pmid_tag, title, abstract, user_id, "PubMed")
         insert_keywords_PubMed(keywords, pmid_tag)
         print(pmid_tag)
-        
-        # print(f"{pmid_tag} | {title} | {abstract} | {publisher_name} | {res}\n")
-        
-    
-
-# fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-
-# params = {
-#     "db": "pubmed",
-#     "id": "id=19393038,30242208,29453458",
-#     "retmode": "xml"
-# }
-
-# r = requests.get(fetch_url, params=params)
-# print(r.text)
-
-
-# pubmed api = https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
-# 3 ul requests by second
-
-
-# Retrieves PubMed IDs (PMIDs) corresponding to a set of input citation strings.
-# /esearch returns just the UID
-# /esummary returns the metadata for a list of UIDs (title, journal, publication date, authors)
-# /efetch returns abstract full author list journal info keywords (MeSH terms) affiliations
-# to search pubmed must use the paramerter db=pubmed
-# to search for a specific term use the parameter term=term
-
-# retmode
-# Retrieval mode. This parameter specifies the data format of the records returned, such as plain text, HMTL or XML. See Table 1 for a full list of allowed values for each database.
-# to specify the query must use the parameter term=term and the parameter is a set of keywords seperated by AND OR NOT...
-#Type of date used to limit a search. The allowed values vary between Entrez databases, but common values are 'mdat' (modification date), 'pdat' (publication date) and 'edat' (Entrez date). Generally an Entrez database will have only two allowed values for datetype.
-#Date range used to limit a search result by the date specified by datetype. These two parameters (mindate, maxdate) must be used together to specify an arbitrary date range. The general date format is YYYY/MM/DD, and these variants are also allowed: YYYY, YYYY/MM.
-#how the processus is done :
-#1. serch the papers using esearch and get the list of PMIDs
-#2. use efetch to get the metadata for each PMID
 
 
 #----------------- Semantic scholar Logic ------------------
