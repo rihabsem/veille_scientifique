@@ -2,7 +2,7 @@ from queue import Queue
 from threading import Thread
 from app.database import SessionLocal
 from app.model import get_user_by_id
-from app.search_logic import first_search
+from app.coord import first_search
 
 
 search_queue = Queue()
