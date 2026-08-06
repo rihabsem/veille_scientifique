@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://research.lphys-ulb.net", 
+    baseURL: "https://veille-scientifique-zyif.vercel.app/", 
     //this should be localhost 8000
     withCredentials: true,//added this
   headers: {//added this

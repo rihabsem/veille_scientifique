@@ -182,7 +182,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
             print(f"Erreur lors de la première recherche pour {user_id}: {e}")
         finally:
             db.close()
-    search_queue.put(user.id)
+    background_tasks.add_task(run_first_search)
     return {"status": "started"}
     
 
