@@ -6,6 +6,7 @@ from mistralai.client import Mistral
 import csv
 from datetime import datetime
 from pathlib import Path
+from langdetect import detect
 
 EMAIL_ADDRESS = "researchserviceerasme@gmail.com"
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSKEY")
@@ -29,6 +30,15 @@ def generate_email(articles, profile):
     combined_text = " ".join([a.get("abstract", "") for a in articles if a.get("abstract")])
     if not combined_text.strip():
         return None
+
+    lang_map = {
+        "en": "English",
+        "fr": "French",
+        "es": "Spanish"
+      }
+    
+    detected_code = detect(profile)
+    output_language = lang_map.get(detected_code, "English")
     
     query = f"""
     ROLE:
@@ -39,7 +49,6 @@ def generate_email(articles, profile):
 
     CONTEXT:
     {articles}
-    {profile}
 
     INSTRUCTIONS:
     - Analyze all the abstracts collectively rather than individually.
@@ -52,9 +61,10 @@ def generate_email(articles, profile):
     - Keep the summary concise (approximately 80–150 words).
     - Avoid repetition and speculative statements.
 
+    OUTPUT LANGUAGE: {output_language}
+      Write the entire output — every question and every answer option — strictly in {output_language}. This is a hard requirement, not a suggestion.
+
     IMPORTANT:
-    - The output language MUST match the context language {profile}.
-    - Do NOT use a default language
     - Return only the summary, with no headings, bullet points, or introductory text.
     """
     client = Mistral(api_key=os.getenv("MISTRAL_KEY"))
@@ -87,7 +97,7 @@ def send_email(to_email, articles, profile):
     msg.set_content(f"""
     Des nouvelles mise a jour sont disponible sur votre compte:
     Voici un resumé récapitulatif:
-    
+
     New updates are available on your account: 
     Here is a summary summary:
     {objet}

@@ -161,9 +161,9 @@ export const translations = {
       sourcePubmed: "PubMed",
       sourcePubmedHelp:
         "Leading database for medicine and life sciences, maintained by the US National Library of Medicine.",
-      noResults : "Aucun article pertinent n'est trouvé.",
-      searchInProgress : "Recherche en cours",
-      noRelevantArticles : "Aucun article pertinent n'est trouvé.",
+      noResults : "No relevant articles found.",
+      searchInProgress : "Search in progress",
+      noRelevantArticles : "No relevant articles found.",
     },
     userdata: {
       title: "User profile",
