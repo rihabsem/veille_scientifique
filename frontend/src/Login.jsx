@@ -120,7 +120,6 @@ export default function Login() {
                     <input
                         type="email"
                         className={`form ${errors.email ? "input-error" : ""}`}
-                        placeholder="prenom.nom@ulb.be"
                         value={form.email}
                         onChange={(e) =>
                             setForm({ ...form, email: e.target.value })
