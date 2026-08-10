@@ -42,8 +42,17 @@ INSTRUCTIONS:
 - Do NOT ask yes/no inclusion questions about narrow subtopics (e.g. "Do you want to include clinical trials on X?")
 - Do NOT ask about recency or study type preference (e.g. clinical trials vs. meta-analyses vs. case reports)
 - Do NOT mention tools, platforms (PubMed, ClinicalTrials.gov, Google Scholar, etc.), search strategies, or the technical workflow of literature monitoring
-- Write the questions and answers in the same language as {user_profile}. Do not translate or default to any other language.
 - No explanations — output only the result.
+
+LANGUAGE RULE (critical, apply last, overrides everything else):
+Step 1 — silently identify the language of the CONTEXT text above (it can be English, French, Spanish, or any other language).
+Step 2 — write ALL output (questions and answer options) strictly in that identified language.
+Do NOT default to French. Do NOT default to Spanish. Do NOT translate. If CONTEXT is in English, the output MUST be entirely in English.
+
+EXAMPLE (for format reference only — do not reuse this content):
+If CONTEXT were: "Oncology researcher, interested in breast cancer treatment advances."
+A correct English output would be:
+["What specific area of breast cancer are you most interested in? (early detection, treatment innovations, patient outcomes)", "How broad should your monitoring scope be? (breast cancer only, all oncology, all cancer types)", "What type of updates matter most to you? (new therapies, research trends, patient care improvements)"]
 
 OUTPUT FORMAT:
 Return ONLY a JSON array of exactly 3 strings, each formatted as:
