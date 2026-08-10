@@ -25,47 +25,30 @@ if not Path(LOG_FILE).exists():
 
 def profile_refinement(user_profile):
   query = f"""
-  ROLE:
-  You are a medical research assistant specialized in scientific literature monitoring across all areas of medicine and biomedical sciences.
+ROLE:
+You are a medical research assistant specialized in scientific literature monitoring across all areas of medicine and biomedical sciences.
 
-  TASK:
-  Generate questions to refine a researcher's scientific knowledge profile.
+TASK:
+Generate exactly 3 profile-clarification questions to refine a researcher's scientific literature monitoring preferences — not scientific exam questions.
 
-  CONTEXT:
-  {user_profile}
+CONTEXT:
+{user_profile}
 
-  INSTRUCTIONS:
-  - Based on the user's profile, generate exactly 3 questions
-  - These questions are NOT scientific exam questions
-  - They are profile clarification questions
-  - Their goal is to better understand what the user wants to monitor in medical literature
+INSTRUCTIONS:
+- Questions must be simple, direct, and user-oriented, focused on preferences, interests, and scope of monitoring
+- Each question must include exactly 3 answer options, written inline in this exact format:
+  Question text (answer 1, answer 2, answer 3)
+- Do NOT ask questions requiring specialized scientific knowledge (e.g. choosing between mechanisms, pathophysiological pathways, or methodological approaches)
+- Do NOT ask yes/no inclusion questions about narrow subtopics (e.g. "Do you want to include clinical trials on X?")
+- Do NOT ask about recency or study type preference (e.g. clinical trials vs. meta-analyses vs. case reports)
+- Do NOT mention tools, platforms (PubMed, ClinicalTrials.gov, Google Scholar, etc.), search strategies, or the technical workflow of literature monitoring
+- Write the questions and answers in the same language as {user_profile}. Do not translate or default to any other language.
+- No explanations — output only the result.
 
-  - Questions should be simple, direct, and user-oriented
-  - Focus on preferences, interests, and scope of monitoring
-  - For ALL the questions you should provide 3 answer options
-
-  - Do NOT generate advanced scientific or research-review style questions
-  - Do NOT ask questions that require specialized scientific knowledge to answer (e.g. choosing between specific mechanisms, pathophysiological pathways, or methodological approaches)
-  - Do NOT ask yes/no questions about whether to "include" a specific narrow subtopic (e.g. "Do you want to include clinical trials on X?")
-  - Do NOT ask the user if they are interested in recent or old literature, or if they want to focus on specific study types (e.g. clinical trials, meta-analyses, case reports)
-  - Match EXACTLY the user's langage they used to describe their profile
-
-  - Questions must NOT include:
-    - tools or platforms (PubMed, ClinicalTrials, Google Scholar, etc.)
-    - search strategies
-    - technical workflow of literature monitoring
-  - Do not provide explanations
-
-  IMPORTANT:
-  - The output language MUST strictly match the language of the input profile (given in the CONTEXT section above).
-  - If the profile is written in English, your questions MUST be in English.
-  - If the profile is written in French, your questions MUST be in French.
-  - Do NOT translate. Do NOT default to French regardless of instructions elsewhere.
-  
-
-  OUTPUT FORMAT:
-  Return ONLY a JSON array of 3 strings
-  """
+OUTPUT FORMAT:
+Return ONLY a JSON array of exactly 3 strings, each formatted as:
+"Question text (answer 1, answer 2, answer 3)"
+"""
   client = Mistral(api_key=os.getenv("MISTRAL_KEY"))
   response = client.chat.complete(
       model="mistral-small-2603",

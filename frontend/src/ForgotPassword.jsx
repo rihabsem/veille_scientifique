@@ -10,7 +10,7 @@ export default function ForgotPassword() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const isValidEmail = (value) => {
-        const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+@ulb\.be$/;
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
         return emailRegex.test(value);
     };
 
@@ -22,13 +22,13 @@ export default function ForgotPassword() {
             setErrors({ email: "Veuillez saisir votre email.", general: "" });
             return;
         }
-        // if (!isValidEmail(email)) {
-        //     setErrors({
-        //         email: "Veuillez utiliser un email valide de l'ULB (ex : prenom.nom@ulb.be).",
-        //         general: ""
-        //     });
-        //     return;
-        // }
+        if (!isValidEmail(email)) {
+            setErrors({
+                email: "Veuillez utiliser un email valide",
+                general: ""
+            });
+            return;
+        }
 
         setIsSubmitting(true);
         try {
