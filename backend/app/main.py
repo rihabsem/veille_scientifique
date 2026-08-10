@@ -203,7 +203,7 @@ def get_dashboard_data(user_id: int = Depends(get_current_user_id)):
     results = get_articles(ids, user.id)
 
     if not user.email_sent:
-        send_email(user.email, results)
+        send_email(user.email, results, user.profil)
         mark_email_sent(user.id)
 
     return results

@@ -22,7 +22,7 @@ if not Path(LOG_FILE).exists():
             "total_tokens"
         ])
 
-def generate_email(articles):
+def generate_email(articles, profile):
     if not articles:
         return None
     
@@ -39,10 +39,11 @@ def generate_email(articles):
 
     CONTEXT:
     {articles}
+    {profile}
 
     INSTRUCTIONS:
     - Analyze all the abstracts collectively rather than individually.
-    - Produce a single, coherent paragraph in French.
+    - Produce a single, coherent paragraph in the same language as {profile}.
     - Highlight only the main scientific trends, emerging findings, or notable advances shared across the articles.
     - Synthesize the information instead of listing or describing each article separately.
     - Do not mention article titles, authors, or journals.
@@ -52,7 +53,8 @@ def generate_email(articles):
     - Avoid repetition and speculative statements.
 
     IMPORTANT:
-    - The output MUST be written entirely in French.
+    - The output language MUST match the context language {profile}.
+    - Do NOT use a default language
     - Return only the summary, with no headings, bullet points, or introductory text.
     """
     client = Mistral(api_key=os.getenv("MISTRAL_KEY"))
@@ -73,18 +75,21 @@ def generate_email(articles):
         ])
     return response.choices[0].message.content
 
-def send_email(to_email, articles):
+def send_email(to_email, articles, profile):
     msg = EmailMessage()
-    msg["Subject"] = "Notification de mise à jour de votre compte"
+    msg["Subject"] = "Notification de mise à jour de votre compte/Account update notification"
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = to_email
-    objet = generate_email(articles)
+    objet = generate_email(articles, profile)
     if objet is None:
         return
     print(objet)
     msg.set_content(f"""
     Des nouvelles mise a jour sont disponible sur votre compte:
     Voici un resumé récapitulatif:
+    
+    New updates are available on your account: 
+    Here is a summary summary:
     {objet}
     """)
 
