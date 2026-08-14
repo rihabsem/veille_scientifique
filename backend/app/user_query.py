@@ -24,27 +24,26 @@ if not Path(LOG_FILE).exists():
             "total_tokens"
         ])
 
-def profile_refinement(user_profile):
-  lang_map = {
+LANG_MAP = {
     "en": "English",
     "fr": "French",
-    "es": "Spanish"
-  }
+    "es": "Spanish",
+}
 
-  detected_code = detect(user_profile)
-  output_language = lang_map.get(detected_code, "English")
-  query = f"""
+MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-2603")
+
+PROFILE_REFINEMENT_PROMPT = """
 ROLE:
 You are a medical research assistant specialized in scientific literature monitoring across all areas of medicine and biomedical sciences.
 
 TASK:
-Generate exactly 3 profile-clarification questions to refine a researcher's scientific literature monitoring preferences — not scientific exam questions.
+Generate exactly 1 profile-clarification question to refine a researcher's scientific literature monitoring preferences — not scientific exam questions.
 
 CONTEXT:
-{user_profile}
+{context}
 
 INSTRUCTIONS:
-  - Questions must be simple, direct, and user-oriented, focused on preferences, interests, and scope of monitoring
+{followup_instruction}  - Questions must be simple, direct, and user-oriented, focused on preferences, interests, and scope of monitoring
   - Each question must include EXACTLY 3 answer options, written inline in this exact format:
     Question text (answer 1, answer 2, answer 3)
   - Do NOT ask questions requiring specialized scientific knowledge (e.g. choosing between mechanisms, pathophysiological pathways, or methodological approaches)
@@ -53,26 +52,53 @@ INSTRUCTIONS:
   - Do NOT mention tools, platforms (PubMed, ClinicalTrials.gov, Google Scholar, etc.), search strategies, or the technical workflow of literature monitoring
   - No explanations — output only the result.
 
-  OUTPUT LANGUAGE: {output_language}
-  Write the entire output — every question and every answer option — strictly in {output_language}. This is a hard requirement, not a suggestion.
+OUTPUT LANGUAGE: {output_language}
+Write the entire output — every question and every answer option — strictly in {output_language}. This is a hard requirement, not a suggestion.
 
-  OUTPUT FORMAT:
-  Return ONLY a JSON array of exactly 3 strings, each formatted as:
-  "Question text (answer 1, answer 2, answer 3)"
-  """
-  client = Mistral(api_key=os.getenv("MISTRAL_KEY"))
-  response = client.chat.complete(
-      model="mistral-small-2603",
-      messages=[
-          {"role":"user", "content":query}
-      ],
-  )
-  usage = response.usage
-  csv_writer(usage, "profile refinement")
-  questions = response.choices[0].message.content
-  questions = re.sub(r"```json|```","",questions).strip()
-  questions = json.loads(questions)
-  return questions
+OUTPUT FORMAT:
+Return ONLY a string, formatted as:
+"Question text (answer 1, answer 2, answer 3)"
+"""
+
+
+def profile_refinement(user_profile, previous_answers=None):
+    """
+    Generates one profile-clarification question.
+    previous_answers: list of prior user answers (empty/None for the first question).
+    """
+    previous_answers = previous_answers or []
+
+    detected_code = detect(user_profile)
+    output_language = LANG_MAP.get(detected_code, "English")
+
+    context = "\n".join([user_profile] + previous_answers)
+
+    followup_instruction = (
+        "  - Using the user's profile and their previous answer(s), generate a "
+        "follow-up question to further refine their scientific literature "
+        "monitoring preferences.\n"
+        if previous_answers
+        else ""
+    )
+
+    query = PROFILE_REFINEMENT_PROMPT.format(
+        context=context,
+        followup_instruction=followup_instruction,
+        output_language=output_language,
+    )
+
+    client = Mistral(api_key=os.getenv("MISTRAL_KEY"))
+    response = client.chat.complete(
+        model=MISTRAL_MODEL,
+        messages=[{"role": "user", "content": query}],
+    )
+
+    usage = response.usage
+    csv_writer(usage, "profile refinement")
+
+    return response.choices[0].message.content.strip()
+
+
 
 def  query_generation(user_profile, user_answers):
   query = f"""
@@ -185,7 +211,7 @@ def user_profile_treatment(user_profile, user_id):
   
 
 
-def launch_LLM(user_profile, id_user, responses):
+def launch_LLM(user_profile, id_user, responses): #je dois rendre tous les réponses en liste
     res = query_generation(user_profile, responses)
     res = re.sub(r"```json|```", "", res).strip()
     try:
@@ -212,76 +238,18 @@ def csv_writer(usage, function_name):
             usage.completion_tokens,
             usage.total_tokens
         ])
-
-# if __name__ == "__main__":
-#   responses=[]
-#   user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
-  
-#   user_profile_treatment(user_profile,1)
-#   response = profile_refinement(user_profile)
-#   print(response)
-#   responses = []
-#   for r in response:
-#     print(r)
-#     response = input("")
-#     responses.append(response)
-
-#   res = query_generation(user_profile, responses)
-#   print(res)
-
-
-#   res = """
-#   [
-#   {
-#     "id": 1,
-#     "semantic_scholar": "(chronic kidney disease OR CKD OR diabetic nephropathy OR hypertensive nephropathy OR glomerular disease) + (artificial intelligence OR machine learning OR deep learning OR predictive model*) + (electronic health record* OR EHR OR real-world data OR clinical data) + (risk stratification OR predictive analytics OR clinical decision support OR explainable AI)",
-#     "pubmed": "((chronic kidney disease OR CKD OR diabetic nephropathy OR hypertensive nephropathy OR glomerular disease) AND (artificial intelligence OR machine learning OR deep learning OR predictive model*) AND (electronic health record* OR EHR OR real-world data OR clinical data) AND (risk stratification OR predictive analytics OR clinical decision support OR explainable AI))",
-#     "clinical_trials": "Studies on AI applications in chronic kidney disease using electronic health records or real-world clinical data for risk stratification and predictive modeling"
-#   },
-#   {
-#     "id": 2,
-#     "semantic_scholar": "(diabetic nephropathy OR hypertensive nephropathy OR glomerular disease) + (acute kidney injury OR AKI) + (transition OR progression OR chronic kidney disease OR CKD) + (predictive model* OR machine learning OR risk stratification) + (validation OR external validation OR prospective study)",
-#     "pubmed": "((diabetic nephropathy OR hypertensive nephropathy OR glomerular disease) AND (acute kidney injury OR AKI) AND (transition OR progression OR chronic kidney disease OR CKD) AND (predictive model* OR machine learning OR risk stratification) AND (validation OR external validation OR prospective study))",
-#     "clinical_trials": "Clinical studies on predictive models for acute kidney injury progression to chronic kidney disease using machine learning and validation in real-world settings"
-#   },
-#   {
-#     "id": 3,
-#     "semantic_scholar": "(chronic kidney disease OR CKD) + (cardiovascular complication* OR cardiovascular disease OR mortality) + (risk prediction OR predictive model* OR machine learning) + (systematic review OR meta-analysis OR cohort study)",
-#     "pubmed": "((chronic kidney disease OR CKD) AND (cardiovascular complication* OR cardiovascular disease OR mortality) AND (risk prediction OR predictive model* OR machine learning) AND (systematic review OR meta-analysis OR cohort study))",
-#     "clinical_trials": "Systematic reviews and meta-analyses on cardiovascular risk prediction in chronic kidney disease using machine learning models"
-#   },
-#   {
-#     "id": 4,
-#     "semantic_scholar": "(explainable AI OR XAI OR interpretable machine learning) + (chronic kidney disease OR CKD OR nephrology) + (predictive model* OR risk stratification OR clinical decision support) + (electronic health record* OR EHR OR healthcare workflow*)",
-#     "pubmed": "((explainable AI OR XAI OR interpretable machine learning) AND (chronic kidney disease OR CKD OR nephrology) AND (predictive model* OR risk stratification OR clinical decision support) AND (electronic health record* OR EHR OR healthcare workflow*))",
-#     "clinical_trials": "Studies on explainable AI methods for predictive modeling in nephrology integrated into electronic health records or clinical workflows"
-#   },
-#   {
-#     "id": 5,
-#     "semantic_scholar": "(novel biomarker* OR precision medicine OR personalized medicine) + (chronic kidney disease OR CKD OR diabetic nephropathy OR hypertensive nephropathy) + (predictive model* OR risk stratification OR early intervention) + (clinical trial* OR validation study OR prospective cohort)",
-#     "pubmed": "((novel biomarker* OR precision medicine OR personalized medicine) AND (chronic kidney disease OR CKD OR diabetic nephropathy OR hypertensive nephropathy) AND (predictive model* OR risk stratification OR early intervention) AND (clinical trial* OR validation study OR prospective cohort))",
-#     "clinical_trials": "Clinical trials and validation studies on novel biomarkers and precision medicine approaches for chronic kidney disease with predictive modeling applications"
-#   }
-# ]
-# """
-
-  # try:
-  #   res = json.loads(res)
-  # except json.JSONDecodeError as e:
-  #   print(f"Erreur ligne {e.lineno}, colonne {e.colno}")
-  #   print(e)
-
-  # for r in res:
-  #   insert_query(r["semantic_scholar"], "Semantic Scholar", 1)
-  #   print(r["semantic_scholar"])
-  #   print("----------------------------------------------------------------")
-  #   insert_query(r["pubmed"], "PubMed", 1)
-  #   print(r["pubmed"])
-  #   print("----------------------------------------------------------------")
-  #   insert_query(r["clinical_trials"], "Clinical Trials", 1)
-  #   print(r["clinical_trials"])
-  #   print("----------------------------------------------------------------")
-    
-
-
-
+if __name__ == "__main__":
+  my_dic={}
+  user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
+  question1 = profile_refinement(user_profile)
+  print(f"Question 1: {question1}", flush=True)
+  answer1 = input(f"")
+  my_dic[question1] = answer1
+  question2 = profile_refinement(user_profile, [answer1])
+  print(f"Question 2: {question2}", flush=True)
+  answer2 = input(f"")
+  my_dic[question2] = answer2
+  question3 = profile_refinement(user_profile, [answer1, answer2])
+  print(f"Question 3: {question3}", flush=True)
+  answer3 = input(f"")
+  my_dic[question3] = answer3

@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://research.lphys-ulb.net", 
+  baseURL: "https://gallstone-botanical-reps.ngrok-free.dev",
+    // baseURL: "https://research.lphys-ulb.net", 
     //this should be localhost 8000
     withCredentials: true,//added this
   headers: {//added this

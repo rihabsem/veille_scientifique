@@ -17,6 +17,7 @@ from contextlib import asynccontextmanager
 from app.email_service import send_email, send_reset_email
 from app.database import SessionLocal
 from app.search_queue import search_queue
+from typing import List
 
 
 scheduler = BackgroundScheduler()
@@ -69,10 +70,15 @@ class RegisterRequest(BaseModel):
             )
         return value
 
+class QuestionAnswer(BaseModel):
+    question: str
+    answer: str
+
+class NextQuestionRequest(BaseModel):
+    previous: List[QuestionAnswer] = []
+
 class SetResultsRequest(BaseModel):
-    question1: str = Field(min_length=1)
-    question2: str = Field(min_length=1)
-    question3: str = Field(min_length=1)
+    answers: List[QuestionAnswer]
 
 class ForgotPasswordRequest(BaseModel):
     email: str
@@ -150,13 +156,40 @@ def register(data: RegisterRequest):
 
     return {"status": "ok"}
 
-@app.get("/questions")
-def get_me(user_id: int = Depends(get_current_user_id)):
+# --- Étape 1 : première question ---
+
+@app.get("/questions/start")
+def start_questions(user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
-    response_json = profile_refinement(user.profil)
-    return response_json
+
+    question = profile_refinement(user.profil)
+    return {"question": question, "step": 1, "is_last": False}
+
+
+# --- Étape 2 et 3 : questions suivantes, basées sur l'historique ---
+
+@app.post("/questions/next")
+def next_question(data: NextQuestionRequest, user_id: int = Depends(get_current_user_id)):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+
+    if len(data.previous) >= 3:
+        raise HTTPException(status_code=400, detail="Nombre maximal de questions atteint")
+
+    previous_answers = [
+        f"Question: {qa.question}\nAnswer: {qa.answer}" for qa in data.previous
+    ]
+
+    question = profile_refinement(user.profil, previous_answers)
+    step = len(data.previous) + 1  # step de la question qu'on vient de générer
+
+    return {"question": question, "step": step, "is_last": step == 3}
+
+
+# --- Étape finale : envoi des 3 réponses, lancement du LLM ---
 
 @app.post("/set-results")
 def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user_id: int = Depends(get_current_user_id)):
@@ -166,14 +199,19 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
     profile = get_user_profile(user_id)
     if profile is None:
         raise HTTPException(status_code=404, detail="Profil introuvable")
-    answers = [data.question1, data.question2, data.question3]
-    print("profile =", profile)
-    print("type(profile) =", type(profile))
-    print("profile[0] =", profile[0])
+
+    if len(data.answers) != 3:
+        raise HTTPException(status_code=400, detail="3 réponses attendues")
+
+    formatted_answers = [
+        f"Question: {qa.question}\nAnswer: {qa.answer}" for qa in data.answers
+    ]
+
     try:
-        launch_LLM(profile[0], user_id, answers)
+        launch_LLM(profile[0], user_id, formatted_answers)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
+
     def run_first_search():
         db = SessionLocal()
         try:
@@ -182,6 +220,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
             print(f"Erreur lors de la première recherche pour {user_id}: {e}")
         finally:
             db.close()
+
     background_tasks.add_task(run_first_search)
     return {"status": "started"}
     

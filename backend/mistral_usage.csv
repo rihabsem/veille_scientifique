@@ -1,0 +1,11 @@
+timestamp,nom_fonction,prompt_tokens,completion_tokens,total_tokens
+2026-08-13T15:31:29.133216,profile refinement,362,46,408
+2026-08-13T15:34:41.703169,profile refinement,362,49,411
+2026-08-13T15:35:02.887270,profile refinement,392,51,443
+2026-08-13T15:35:28.174506,profile refinement,397,49,446
+2026-08-14T12:37:04.946649,profile refinement,356,55,411
+2026-08-14T12:37:05.964910,profile refinement,383,68,451
+2026-08-14T12:37:31.357612,profile refinement,383,55,438
+2026-08-14T12:37:43.952934,profile refinement,356,61,417
+2026-08-14T13:07:09.921433,profile refinement,383,64,447
+2026-08-14T13:07:10.781813,profile refinement,383,36,419
