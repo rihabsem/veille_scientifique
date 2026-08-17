@@ -9,3 +9,12 @@ timestamp,nom_fonction,prompt_tokens,completion_tokens,total_tokens
 2026-08-14T12:37:43.952934,profile refinement,356,61,417
 2026-08-14T13:07:09.921433,profile refinement,383,64,447
 2026-08-14T13:07:10.781813,profile refinement,383,36,419
+2026-08-14T14:28:32.892952,profile refinement,356,74,430
+2026-08-14T14:29:17.485915,profile refinement,475,68,543
+2026-08-14T14:29:49.053201,profile refinement,555,72,627
+2026-08-14T14:30:07.787946,query generation,976,861,1837
+2026-08-14T14:38:39.688795,profile refinement,356,58,414
+2026-08-14T14:44:26.109773,profile refinement,356,64,420
+2026-08-14T14:44:37.062953,profile refinement,455,48,503
+2026-08-14T14:45:10.675169,profile refinement,511,69,580
+2026-08-14T14:45:34.199390,query generation,925,451,1376

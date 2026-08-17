@@ -180,16 +180,15 @@ def next_question(data: NextQuestionRequest, user_id: int = Depends(get_current_
         raise HTTPException(status_code=400, detail="Nombre maximal de questions atteint")
 
     previous_answers = [
-        f"Question: {qa.question}\nAnswer: {qa.answer}" for qa in data.previous
+        f"{qa.question}: {qa.answer}" for qa in data.previous
     ]
 
     question = profile_refinement(user.profil, previous_answers)
-    step = len(data.previous) + 1  # step de la question qu'on vient de générer
+    step = len(data.previous) + 1
 
     return {"question": question, "step": step, "is_last": step == 3}
 
 
-# --- Étape finale : envoi des 3 réponses, lancement du LLM ---
 
 @app.post("/set-results")
 def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user_id: int = Depends(get_current_user_id)):
@@ -212,16 +211,7 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
 
-    def run_first_search():
-        db = SessionLocal()
-        try:
-            first_search(db, user)
-        except Exception as e:
-            print(f"Erreur lors de la première recherche pour {user_id}: {e}")
-        finally:
-            db.close()
-
-    background_tasks.add_task(run_first_search)
+    search_queue.put(user_id)
     return {"status": "started"}
     
 

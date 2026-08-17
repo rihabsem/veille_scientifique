@@ -59,6 +59,9 @@ export const translations = {
       intro:
         "Ces questions nous aident à mieux comprendre vos intérêts afin de vous proposer des résultats plus pertinents. Répondez en quelques phrases.",
       submitButton: "Soumettre",
+      loading: "Chargement...",
+      submitButton: "Soumettre",
+      nextButton: "Suivant",
     },
     dashboard: {
       welcomeTitle: "Bienvenue !",
@@ -147,6 +150,9 @@ export const translations = {
       intro:
         "These questions help us better understand your interests so we can suggest more relevant results. A few sentences is enough.",
       submitButton: "Submit",
+      loading: "Loading...",
+      submitButton: "Submit",
+      nextButton: "Next",
     },
     dashboard: {
       welcomeTitle: "Welcome!",
