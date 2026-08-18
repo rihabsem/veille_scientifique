@@ -27,7 +27,7 @@ scheduler = BackgroundScheduler()
 async def lifespan(app: FastAPI):
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=10, minute=10, timezone='Europe/Brussels'),
+        trigger=CronTrigger(hour=14, minute=15),
         id="daily_coordinateur",
         replace_existing=True
     )

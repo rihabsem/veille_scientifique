@@ -18,3 +18,7 @@ timestamp,nom_fonction,prompt_tokens,completion_tokens,total_tokens
 2026-08-14T14:44:37.062953,profile refinement,455,48,503
 2026-08-14T14:45:10.675169,profile refinement,511,69,580
 2026-08-14T14:45:34.199390,query generation,925,451,1376
+2026-08-18T13:21:44.675240,profile refinement,589,36,625
+2026-08-18T13:22:18.877504,profile refinement,657,45,702
+2026-08-18T13:22:33.845579,profile refinement,725,43,768
+2026-08-18T13:22:54.802386,query generation,1129,469,1598
