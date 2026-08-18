@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const API = axios.create({
-  // baseURL: "https://gallstone-botanical-reps.ngrok-free.dev",
-  baseURL: "https://research.lphys-ulb.net", 
-    //this should be localhost 8000
-    withCredentials: true,//added this
-  headers: {//added this
-    'ngrok-skip-browser-warning': 'true',//added this
-  }, //added this
+  baseURL: "https://gallstone-botanical-reps.ngrok-free.dev",
+  // baseURL: "https://research.lphys-ulb.net", 
+    withCredentials: true,
+  headers: {
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 API.interceptors.request.use((config) => {

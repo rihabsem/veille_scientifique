@@ -2,6 +2,8 @@ from app.database import Base, engine
 from app.models.users import User
 from app.models.articles import Article
 from app.models.keywords import Keyword
+from app.models.passwordReset import PasswordResetToken
+from app.models.query import Query
 
 def init_db():
     Base.metadata.create_all(bind=engine)
