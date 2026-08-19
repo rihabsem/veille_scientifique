@@ -140,28 +140,32 @@ def  query_generation(user_profile, user_answers):
   - "..." for exact phrases
   - (...) for grouping
   - * for prefixes
+  - Combine AT MOST 2 core concepts with + (AND). Use | (OR) freely for synonyms within a concept.
 
   PUBMED FORMAT:
-  - Use Boolean operators AND, OR, NOT.
-  - Use Boolean operators ONLY DONT add any other operator.
-  The query should be as simple as possible, not nested or complex, and composed of basic keywords separated by Boolean operators.
-  - Use quotation marks for multi-word concepts when appropriate.
-  - Produce queries directly usable in PubMed.
+  - Use Boolean operators AND, OR, NOT only.
+  - HARD LIMIT: use AT MOST 1 single "AND" per query, connecting exactly 2 concepts. Never chain 3 or more AND conditions.
+  - Each concept can itself be a group of synonyms joined with OR, e.g. ("term1" OR "term2") AND ("term3" OR "term4") — this still counts as ONE AND.
+  - Prefer a single specific concept alone over combining unrelated ones.
+  - Use quotation marks for multi-word concepts.
+  - The query must be short and directly usable in PubMed.
 
   CLINICALTRIALS QUERY FORMAT:
   - Generate a short keyword-based search query.
-  - Use 3 to 8 keywords maximum.
+  - Use 3 to 6 keywords maximum, focused on ONE core concept (plus at most one qualifier).
   - No full sentences or natural language descriptions.
   - Avoid words like "studies", "research on", "applications of".
   - Focus only on medical concepts and techniques.
   - Use spaces between keywords (no Boolean operators unless necessary).
-  - Prioritize clinical terms, diseases, methods, and data types.
 
   RULES:
+  - PRIORITIZE BREADTH OVER SPECIFICITY: a simpler query that returns more results is always better than a precise query that returns none.
+  - Each of the 5 queries should focus on ONE distinct concept or technology from the profile, not a combination of several.
+  - Do NOT combine more than 2 concepts per query, in any database format.
+  - Use OR to broaden within a single concept (synonyms, related terms), never to combine unrelated concepts.
   - Generate only queries relevant to the user's interests.
-  - Include synonyms when useful.
+  - Include synonyms when useful, to increase the chance of matches.
   - Avoid duplicate or nearly identical queries.
-  - Balance specificity and coverage.
   - Do not explain your reasoning.
   - Do not give keywords consistent of one word only, except for acronyms or abbreviations.
 
@@ -190,7 +194,7 @@ Each element must be a dictionary with the following structure:
   - Do not include explanations
   - Do not include markdown
   - Do not duplicate queries
-  - Ensure diversity across queries
+  - Ensure diversity across queries — each of the 5 should cover a DIFFERENT concept from the profile
   - I want EXACTLY 5 queries
   """
   client = Mistral(api_key=os.environ["MISTRAL_KEY"])
@@ -202,6 +206,7 @@ Each element must be a dictionary with the following structure:
   )
   usage = response.usage
   csv_writer(usage, "query generation")
+  print(response.choices[0].message.content)
   return response.choices[0].message.content
 
 def user_profile_treatment(user_profile, user_id):
@@ -211,7 +216,7 @@ def user_profile_treatment(user_profile, user_id):
   
 
 
-def launch_LLM(user_profile, id_user, responses): #je dois rendre tous les réponses en liste
+def launch_LLM(user_profile, id_user, responses):
     res = query_generation(user_profile, responses)
     res = re.sub(r"```json|```", "", res).strip()
     try:

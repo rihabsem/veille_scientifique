@@ -18,6 +18,11 @@ from app.email_service import send_email, send_reset_email
 from app.database import SessionLocal
 from app.search_queue import search_queue
 from typing import List
+from zoneinfo import ZoneInfo
+from apscheduler.triggers.interval import IntervalTrigger
+import logging
+logging.basicConfig()
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
 scheduler = BackgroundScheduler()
@@ -25,14 +30,18 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("Starting scheduler...", flush=True)
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=14, minute=15),
+        trigger=CronTrigger(hour=10, minute=52, timezone=ZoneInfo("Europe/Brussels")),
         id="daily_coordinateur",
         replace_existing=True
     )
+
     scheduler.start()
+
     yield
+
     scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
@@ -211,7 +220,16 @@ def set_results(data: SetResultsRequest, background_tasks: BackgroundTasks, user
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur LLM: {str(e)}")
 
-    search_queue.put(user_id)
+    def run_first_search():
+        db = SessionLocal()
+        try:
+            first_search(db, user)
+        except Exception as e:
+            print(f"Erreur lors de la première recherche pour {user_id}: {e}")
+        finally:
+            db.close()
+
+    background_tasks.add_task(run_first_search)
     return {"status": "started"}
     
 

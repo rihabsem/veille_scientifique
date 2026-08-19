@@ -44,7 +44,7 @@ export default function UserData() {
         try {
             await API.post("/update", form);
             if (form.profile.trim() !== initialProfile.trim()) {
-                navigate("/questions");
+                navigate("/questions/start");
                 return;
             }
 

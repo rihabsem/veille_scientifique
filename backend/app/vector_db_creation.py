@@ -132,9 +132,9 @@ def clear_articles_collection():
         print(f"Supprimé {len(ids)} entrées de la collection articles")
     else:
         print("Collection users déjà vide")
-if __name__ == "__main__":
-    clear_articles_collection()
-    clear_users_collection()
+# if __name__ == "__main__":
+    # clear_articles_collection()
+    # clear_users_collection()
     # id=26
     # embedding = search_user_embedding(str(id))
     # print(embedding)

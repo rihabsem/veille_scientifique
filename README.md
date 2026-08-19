@@ -81,4 +81,7 @@ L'architecture considérée pour le backend est la suivante :
   - **`/tests`** : le dossier contenant les fichiers de tests
 
 ## Role de chaque fichier
+- **`/api_logic`** : le fichier qui fait le traitement de les appels aux bases de données distant
+- **`/user_query`** : le fichier responsable de la génération des questions en se basant sur le profile et la génération des requêtes de recherche en se basant sur le profile et les réponses aux questions
+
 

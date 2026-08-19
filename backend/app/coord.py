@@ -119,11 +119,11 @@ def first_search(db, user):
 
 def run_batch():
     """Appelée par le scheduler, une fois par jour. Traite tous les utilisateurs dus aujourd'hui."""
-    print("coordinateur on")
+    print("-----------------------------coordinateur on-----------------------------")
     db = SessionLocal()
     try:
         date = datetime.now()
-        date_string = re.sub("[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]+", "", str(date)).strip()
+        date_string = datetime.now().strftime("%Y-%m-%d")
         users = get_user_by_date(date_string)
         print(f"number of users to process = {len(users)}")
 

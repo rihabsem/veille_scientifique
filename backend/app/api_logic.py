@@ -27,7 +27,11 @@ def pubmed_search(query, min_date, max_date):
         "retmode": "json"
     }
 
-    response = requests.get(search_url, params=params)
+    try:
+        response = requests.get(search_url, params=params, timeout=30)
+    except requests.RequestException as e:
+        print(f"Error fetching PubMed search: {e}")
+        return []
 
     raw = response.text
 
@@ -77,7 +81,12 @@ def pubmed_fetch(pmids):
         "id": ",".join(pmids),
         "retmode": "xml"
     }
-    return requests.get(fetch_url, params=params)
+    try:
+        response = requests.get(fetch_url, params=params, timeout=30)
+        return response
+    except requests.RequestException as e:
+        print(f"Error fetching PubMed articles: {e}")
+        return None
 
 def handle_result_pubmed(results, user_id):
     if results is None:
@@ -113,7 +122,7 @@ def handle_result_pubmed(results, user_id):
 
 
 #----------------- Semantic scholar Logic ------------------
-def semantic_scholar_search(query, min_date, max_date): #dont forget to add the domaine
+def semantic_scholar_search(query, min_date, max_date):
     params = {
     "query": query,
     "fields": "paperId,title,abstract,year,publicationDate",
@@ -123,9 +132,12 @@ def semantic_scholar_search(query, min_date, max_date): #dont forget to add the 
     headers = {
     "x-api-key": os.getenv("API_KEY")
     }
-
-    response = requests.get(semantic_url, params=params, headers=headers)
-    return response
+    try:
+        response = requests.get(semantic_url, params=params, headers=headers, timeout=30)
+        return response
+    except requests.RequestException as e:
+        print(f"Error fetching Semantic Scholar articles: {e}")
+        return None
 
 def handle_result_semantic_scholar(source, user_id):
     results = source.get("data",[])
@@ -145,48 +157,6 @@ def handle_result_semantic_scholar(source, user_id):
 
 
 
-#publicationDateOrYear : Restricts results to the given range of publication dates or years (inclusive). Accepts the format <startDate>:<endDate> with each date in YYYY-MM-DD format.
-# fieldsOfStudy	
-# Restricts results to papers in the given fields of study, formatted as a comma-separated list:
-
-# Computer Science
-# Medicine
-# Chemistry
-# Biology
-# Materials Science
-# Physics
-# Geology
-# Psychology
-# Art
-# History
-# Geography
-# Sociology
-# Business
-# Political Science
-# Economics
-# Philosophy
-# Mathematics
-# Engineering
-# Environmental Science
-# Agricultural and Food Sciences
-# Education
-# Law
-# Linguistics
-# query structure:
-# Text query that will be matched against the paper's title and abstract. All terms are stemmed in English. By default all terms in the query must be present in the paper.
-
-# The match query supports the following syntax:
-
-# + for AND operation
-# | for OR operation
-# - negates a term
-# " collects terms into a phrase
-# * can be used to match a prefix
-# ( and ) for precedence
-# ~N after a word matches within the edit distance of N (Defaults to 2 if N is omitted)
-# ~N after a phrase matches with the phrase terms separated up to N terms apart (Defaults to 2 if N is omitted)
-
-
 #----------------- Clinical Trials ------------------
 def clinical_trials_search(query, min_date, max_date):
     q = (
@@ -197,8 +167,12 @@ def clinical_trials_search(query, min_date, max_date):
     "sort": "StartDate:desc",
     "pageSize": 100
     }
-    response = requests.get(clinical_trials_url, params=params)
-    return response.json()
+    try:
+        response = requests.get(clinical_trials_url, params=params, timeout=30)
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching Clinical Trials articles: {e}")
+        return None
 
 def handle_response_clinical_trials(result,user_id):
 
