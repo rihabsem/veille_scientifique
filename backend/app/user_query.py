@@ -191,11 +191,18 @@ Each element must be a dictionary with the following structure:
   }}
 
   RULES:
-  - Do not include explanations
-  - Do not include markdown
-  - Do not duplicate queries
-  - Ensure diversity across queries — each of the 5 should cover a DIFFERENT concept from the profile
-  - I want EXACTLY 5 queries
+  RULES:
+  - PRIORITIZE BREADTH OVER SPECIFICITY: a simpler query that returns more results is always better than a precise query that returns none.
+  - Each of the 5 queries should focus on ONE distinct concept or technology from the profile, not a combination of several.
+  - Do NOT combine more than 2 concepts per query, in any database format.
+  - Use OR to broaden within a single concept (synonyms, related terms), never to combine unrelated concepts.
+  - Generate only queries relevant to the user's interests.
+  - Include synonyms when useful, to increase the chance of matches.
+  - Avoid duplicate or nearly identical queries.
+  - Do not explain your reasoning.
+  - Do not give keywords consistent of one word only, except for acronyms or abbreviations.
+  - MANDATORY: the output array MUST contain EXACTLY 5 elements, no more, no less.
+  - If the profile does not offer 5 clearly distinct concepts, reuse or slightly vary secondary aspects, sub-technologies, populations, or methodologies already mentioned to reach exactly 5 queries. Never return fewer than 5.
   """
   client = Mistral(api_key=os.environ["MISTRAL_KEY"])
   response = client.chat.complete(
