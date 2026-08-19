@@ -8,9 +8,6 @@ from app.vector_db_creation import store_embedding_in_db
 from app.database import SessionLocal
 from app.model import insert_article, insert_keywords, insert_keywords_PubMed
 
-
-#---------------- PubMed API Logic ------------------
-#date structure :  YYYY/MM/DD
 search_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 fetch_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 semantic_url = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
@@ -41,34 +38,22 @@ def pubmed_search(query, min_date, max_date):
     # 1. try JSON
     try:
         data = response.json()
-        print("\n[DEBUG] JSON PARSE: SUCCESS")
 
         idlist = data.get("esearchresult", {}).get("idlist", [])
-        print("[DEBUG] ID LIST:", idlist)
 
         return idlist
 
     except Exception as e:
         print("\n[DEBUG] JSON PARSE FAILED:", str(e))
     try:
-        print("\n[DEBUG] TRYING XML PARSE...")
         root = ET.fromstring(raw)
 
         ids = [id_elem.text for id_elem in root.findall(".//Id")]
-
-        print("[DEBUG] XML PARSE SUCCESS")
-        print("[DEBUG] IDS:", ids)
 
         return ids
 
     except Exception as e:
         print("\n[DEBUG] XML PARSE FAILED:", str(e))
-
-    # 3. last fallback
-    print("\n[DEBUG] PUBMED PARSE FAILED COMPLETELY")
-    print(raw[:500])
-
-    print("========== PUBMED SEARCH END ==========\n")
 
     return []
 
@@ -118,7 +103,6 @@ def handle_result_pubmed(results, user_id):
         store_embedding_in_db(pmid_tag, embedding, user_id)
         insert_article(pmid_tag, title, abstract, user_id, "PubMed")
         insert_keywords_PubMed(keywords, pmid_tag)
-        print(pmid_tag)
 
 
 #----------------- Semantic scholar Logic ------------------
@@ -153,7 +137,6 @@ def handle_result_semantic_scholar(source, user_id):
         embedding = get_embedding(cleaned_data)
         store_embedding_in_db(id, embedding, user_id)
         insert_article(id, title, abstract, user_id, "Semantic Scholar")
-        print(id)
 
 
 
@@ -202,44 +185,3 @@ def handle_response_clinical_trials(result,user_id):
         store_embedding_in_db(study_id, embedding, user_id)
         insert_article(study_id, title, description, user_id, "ClinicalTrials")
         insert_keywords(keyword_list, study_id)
-# def handle_response_clinical_trials(result, output_file="clinical_trials_results.txt"):
-#     results = result["studies"]
-
-#     with open(output_file, "w", encoding="utf-8") as f:
-#         for res in results:
-#             identification = res["protocolSection"]["identificationModule"]
-
-#             study_id = identification.get("nctId")
-
-
-
-#             title = identification.get("officialTitle", "")
-
-#             description = res["protocolSection"].get(
-#                 "descriptionModule", {}
-#             ).get("detailedDescription", "")
-
-#             keyword_list = res["protocolSection"].get(
-#                 "conditionsModule", {}
-#             ).get("keywords", [])
-
-#             line = f"{study_id} | {domain_list} | {title}... | {keyword_list}\n"
-#             line += "-" * 90 + "\n"
-
-#             print(line)        # affiche quand même dans le terminal
-#             f.write(line)      # écrit dans le fichier
-
-#     print(f"Résultats enregistrés dans : {output_file}")
-      
-            
-
-
-#parameter:
-#LastKnownStatus
-#StartDate
-#l'api clinical trials accepte des phrases simple pour décrire la recherche en utilisant le parametre query.term
-#dans le parametre query.terme on peut ajouter une condition sur la date par AREA[start date]RANGE[MIN_DATE,MAX_DATE] --> la variable start date prend les valeurs dans l'intervalle MIN_DATE et MAX_DATE
-
-
-
-

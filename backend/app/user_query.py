@@ -102,11 +102,11 @@ def profile_refinement(user_profile, previous_answers=None):
 
 def  query_generation(user_profile, user_answers):
   query = f"""
-  ROLE:
+    ROLE:
   You are an expert in biomedical information retrieval and scientific literature monitoring.
 
   TASK:
-  Generate optimized search queries for scientific databases based on a user's profile and their answers to refinement questions.
+  Generate simple and concise search queries based on the user's profile and answers.
 
   INPUT:
 
@@ -118,91 +118,66 @@ def  query_generation(user_profile, user_answers):
 
   INSTRUCTIONS:
 
-  - The user answers are provided in the format:
-    Question: Answer
-
   - Analyze both the user profile and the answers.
-
-  - Generate up to 5 distinct search queries.
-
-  - Each query should target a different aspect, subtopic, methodology, population, disease, technology, or research objective mentioned by the user.
-
-  - For each generated query, provide the equivalent formulation for:
-    1. Semantic Scholar
-    2. PubMed
-    3. ClinicalTrials.gov
+  - Generate exactly 15 distinct queries: 5 for Semantic Scholar, 5 for PubMed, and 5 for ClinicalTrials.gov.
+  - Each query must focus on a relevant aspect of the user's interests.
+  - Keep queries short, simple, and concise.
+  - Each query must contain a maximum of 3 distinct terms or concepts.
+  - Prefer OR to combine synonyms or closely related terms.
+  - Use AND only when necessary to combine two different concepts.
+  - Do not use more than 1 AND in a query.
+  - Prefer several simple queries covering different aspects rather than complex queries.
+  - Do not create long or highly specific queries.
+  - Do not repeat the same concepts unnecessarily.
+  - Include synonyms when useful.
+  - Do not use single-word terms unless they are acronyms or abbreviations.
+  - All queries must be directly usable in their respective database.
+  - Do not explain your reasoning.
 
   SEMANTIC SCHOLAR FORMAT:
-  Use the following syntax when appropriate:
-  - + for AND
-  - | for OR
-  - - for NOT
-  - "..." for exact phrases
-  - (...) for grouping
-  - * for prefixes
-  - Combine AT MOST 2 core concepts with + (AND). Use | (OR) freely for synonyms within a concept.
+  - Use + for AND.
+  - Use | for OR.
+  - Use - for NOT.
+  - Use "..." for exact phrases when useful.
+  - Keep queries short and simple.
 
   PUBMED FORMAT:
-  - Use Boolean operators AND, OR, NOT only.
-  - HARD LIMIT: use AT MOST 1 single "AND" per query, connecting exactly 2 concepts. Never chain 3 or more AND conditions.
-  - Each concept can itself be a group of synonyms joined with OR, e.g. ("term1" OR "term2") AND ("term3" OR "term4") — this still counts as ONE AND.
-  - Prefer a single specific concept alone over combining unrelated ones.
-  - Use quotation marks for multi-word concepts.
-  - The query must be short and directly usable in PubMed.
+  - Use only AND, OR, NOT.
+  - Prefer OR for synonyms.
+  - Use AND only to combine different concepts.
+  - Use quotation marks for multi-word concepts when useful.
+  - Keep queries simple and directly usable in PubMed.
 
-  CLINICALTRIALS QUERY FORMAT:
-  - Generate a short keyword-based search query.
-  - Use 3 to 6 keywords maximum, focused on ONE core concept (plus at most one qualifier).
-  - No full sentences or natural language descriptions.
-  - Avoid words like "studies", "research on", "applications of".
-  - Focus only on medical concepts and techniques.
-  - Use spaces between keywords (no Boolean operators unless necessary).
-
-  RULES:
-  - PRIORITIZE BREADTH OVER SPECIFICITY: a simpler query that returns more results is always better than a precise query that returns none.
-  - Each of the 5 queries should focus on ONE distinct concept or technology from the profile, not a combination of several.
-  - Do NOT combine more than 2 concepts per query, in any database format.
-  - Use OR to broaden within a single concept (synonyms, related terms), never to combine unrelated concepts.
-  - Generate only queries relevant to the user's interests.
-  - Include synonyms when useful, to increase the chance of matches.
-  - Avoid duplicate or nearly identical queries.
-  - Do not explain your reasoning.
-  - Do not give keywords consistent of one word only, except for acronyms or abbreviations.
+  CLINICALTRIALS FORMAT:
+  - Use short keyword-based queries.
+  - Maximum 3 concepts per query.
+  - Use 3 to 8 words maximum.
+  - No full sentences.
+  - No Boolean operators unless necessary.
+  - Focus on diseases, medical concepts, techniques, populations, or data types.
 
   OUTPUT FORMAT:
-  Return ONLY a JSON array.
-  The response must be directly parsable by Python json.loads().
 
-  IMPORTANT:
-  - Return valid JSON only.
-  - Every value must be a JSON string.
-  - Return valid, standard JSON with double quotes for all keys and string values
-  - Do not use markdown.
-  - Do not wrap the output in ```json.
-  - You MUST reply with the same language as the input.
+  Return ONLY a valid JSON array.
+  Do not use markdown.
+  Do not provide explanations.
 
-Each element must be a dictionary with the following structure:
+  Each element must have exactly this structure:
 
-  {{
+  {
     "id": integer,
     "semantic_scholar": string,
     "pubmed": string,
     "clinical_trials": string
-  }}
+  }
 
-  RULES:
-  RULES:
-  - PRIORITIZE BREADTH OVER SPECIFICITY: a simpler query that returns more results is always better than a precise query that returns none.
-  - Each of the 5 queries should focus on ONE distinct concept or technology from the profile, not a combination of several.
-  - Do NOT combine more than 2 concepts per query, in any database format.
-  - Use OR to broaden within a single concept (synonyms, related terms), never to combine unrelated concepts.
-  - Generate only queries relevant to the user's interests.
-  - Include synonyms when useful, to increase the chance of matches.
-  - Avoid duplicate or nearly identical queries.
-  - Do not explain your reasoning.
-  - Do not give keywords consistent of one word only, except for acronyms or abbreviations.
-  - MANDATORY: the output array MUST contain EXACTLY 5 elements, no more, no less.
-  - If the profile does not offer 5 clearly distinct concepts, reuse or slightly vary secondary aspects, sub-technologies, populations, or methodologies already mentioned to reach exactly 5 queries. Never return fewer than 5.
+  IMPORTANT:
+  - Return exactly 5 query groups.
+  - Each group contains one Semantic Scholar query, one PubMed query, and one ClinicalTrials.gov query.
+  - This produces exactly 15 queries in total.
+  - Every value must be a JSON string.
+  - Use double quotes for all keys and string values.
+  - Do not duplicate or nearly duplicate queries.
   """
   client = Mistral(api_key=os.environ["MISTRAL_KEY"])
   response = client.chat.complete(
@@ -213,7 +188,6 @@ Each element must be a dictionary with the following structure:
   )
   usage = response.usage
   csv_writer(usage, "query generation")
-  print(response.choices[0].message.content)
   return response.choices[0].message.content
 
 def user_profile_treatment(user_profile, user_id):
@@ -223,7 +197,7 @@ def user_profile_treatment(user_profile, user_id):
   
 
 
-def launch_LLM(user_profile, id_user, responses):
+def launch_LLM(user_profile, id_user, responses): #je dois rendre tous les réponses en liste
     res = query_generation(user_profile, responses)
     res = re.sub(r"```json|```", "", res).strip()
     try:

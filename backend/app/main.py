@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     print("Starting scheduler...", flush=True)
     scheduler.add_job(
         run_batch,
-        trigger=CronTrigger(hour=10, minute=52, timezone=ZoneInfo("Europe/Brussels")),
+        trigger=IntervalTrigger(minutes=2),
         id="daily_coordinateur",
         replace_existing=True
     )
@@ -55,6 +55,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 class LoginRequest(BaseModel):
     email: str 
     password: str
@@ -165,8 +167,6 @@ def register(data: RegisterRequest):
 
     return {"status": "ok"}
 
-# --- Étape 1 : première question ---
-
 @app.get("/questions/start")
 def start_questions(user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
@@ -176,8 +176,6 @@ def start_questions(user_id: int = Depends(get_current_user_id)):
     question = profile_refinement(user.profil)
     return {"question": question, "step": 1, "is_last": False}
 
-
-# --- Étape 2 et 3 : questions suivantes, basées sur l'historique ---
 
 @app.post("/questions/next")
 def next_question(data: NextQuestionRequest, user_id: int = Depends(get_current_user_id)):
@@ -279,12 +277,13 @@ def search_status(user_id: int = Depends(get_current_user_id)):
 @app.post("/update")
 def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current_user_id)):
     user = get_user_by_id(user_id)
-
+    print(f"Updating user {user_id} update rate from {user.weekly_monthly} to {data.update_rate}")
     if user is None:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable")
 
     if user.weekly_monthly != data.update_rate:
         update_user_update_rate(user_id, data.update_rate)
+
     if user.profil != data.profile:
         update_user_profile(user_id, data.profile)
         profile_cleaned = clean_data(data.profile)

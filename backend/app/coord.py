@@ -62,7 +62,6 @@ def process_user(db, user):
     user_next_updated_date = str(date_next.strftime("%Y-%m-%d"))
     update_user_date(user.id, user_next_updated_date, user_last_updated_date)
     reset_email_sent(user.id)
-    # return resultats
 
 
 def first_search(db, user):

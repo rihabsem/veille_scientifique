@@ -23,8 +23,6 @@ def insert_article(id, title, abstract, id_user, source):
                 source=source
             ))
             db.commit()
-        else:
-            print("existing article\n")
     except Exception:
         db.rollback()
         raise
@@ -85,7 +83,7 @@ def insert_user(name, email, hashed_password, profil, last_updated_date, next_up
         )
         db.add(new_user)
         db.commit()
-        db.refresh(new_user)  # recharge l'objet depuis la DB pour récupérer l'id auto-généré
+        db.refresh(new_user)
         return new_user.id
     finally:
         db.close()
@@ -199,6 +197,8 @@ def update_user_profile(user_id, profile):
 def update_user_update_rate(user_id, update_rate):
     db = SessionLocal()
     try:
+        print(user_id)
+        print(update_rate)
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             return
@@ -208,11 +208,8 @@ def update_user_update_rate(user_id, update_rate):
         date_obj = datetime.strptime(user.last_updated_date, "%Y-%m-%d").date()
         date_next = date_obj + timedelta(days=days)
 
-        user.update_rate = update_rate
+        user.weekly_monthly = update_rate
         user.next_updated_date = date_next.isoformat()
-        last_updated_date = User.last_updated_date
-        print(date_next)
-        print(last_updated_date)
         db.commit()
     except Exception:
         db.rollback()

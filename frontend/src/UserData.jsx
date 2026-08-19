@@ -48,8 +48,6 @@ export default function UserData() {
                 return;
             }
 
-            alert("Profil mis à jour avec succès.");
-
         } catch (err) {
             console.log(err.response?.status);
             console.log(err.response?.data);
