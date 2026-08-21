@@ -9,16 +9,16 @@ import "./css/qsts.css";
 const Questions = () => {
   const { t } = useLanguage();
 
-  const [currentQuestion, setCurrentQuestion] = useState(null); // texte de la question affichée
-  const [currentAnswer, setCurrentAnswer] = useState("");       // réponse en cours de saisie
-  const [history, setHistory] = useState([]);                    // [{question, answer}, ...] déjà validées
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [currentAnswer, setCurrentAnswer] = useState("");
+  const [history, setHistory] = useState([]);
   const [isLast, setIsLast] = useState(false);
 
-  const [loading, setLoading] = useState(true);       // chargement initial
-  const [submitting, setSubmitting] = useState(false); // appel réseau en cours (next / set-results)
-  const [error, setError] = useState(null);            // erreur bloquante (chargement initial)
-  const [fieldError, setFieldError] = useState("");     // erreur de validation du champ courant
-  const [generalError, setGeneralError] = useState(""); // erreur lors de la soumission
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [fieldError, setFieldError] = useState("");
+  const [generalError, setGeneralError] = useState("");
 
   const navigate = useNavigate();
   const hasFetched = useRef(false);
@@ -27,7 +27,6 @@ const Questions = () => {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
   };
 
-  // --- Chargement de la première question ---
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
@@ -64,13 +63,10 @@ const Questions = () => {
     setSubmitting(true);
     try {
       if (isLast) {
-        // Dernière question répondue -> on envoie tout
         await API.post("/set-results", { answers: updatedHistory }, authHeaders);
         navigate("/dashboard");
         return;
       }
-
-      // Sinon, on demande la question suivante
       const response = await API.post(
         "/questions/next",
         { previous: updatedHistory },

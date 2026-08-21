@@ -197,17 +197,14 @@ def update_user_profile(user_id, profile):
 def update_user_update_rate(user_id, update_rate):
     db = SessionLocal()
     try:
-        print(user_id)
-        print(update_rate)
+        print("user id:", user_id)
+        print("update rate:", update_rate)
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             return
-
         days = 7 if update_rate == "weekly" else 31
-
         date_obj = datetime.strptime(user.last_updated_date, "%Y-%m-%d").date()
         date_next = date_obj + timedelta(days=days)
-
         user.weekly_monthly = update_rate
         user.next_updated_date = date_next.isoformat()
         db.commit()

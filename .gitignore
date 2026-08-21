@@ -5,12 +5,15 @@
 .env
 backend/.env
 backend/app/.env
+frontend
 
 # Node modules
-node_modules/
+node_modules/.env
 
 # Logs
 *.log
+backend/mistral_email_usage.csv
+backend/mistral_usage.csv
 
 # Vite
 dist/

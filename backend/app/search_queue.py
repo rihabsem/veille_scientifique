@@ -17,7 +17,6 @@ def worker():
         user_id = search_queue.get()
 
         try:
-            print(f"Début recherche utilisateur {user_id}")
 
             db = SessionLocal()
 
@@ -29,8 +28,6 @@ def worker():
 
             finally:
                 db.close()
-
-            print(f"Recherche terminée utilisateur {user_id}")
 
         except Exception as e:
             print(

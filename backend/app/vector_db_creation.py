@@ -90,7 +90,6 @@ def search_articles_for_user(user_id, k=20):
         where={"user_id": user_id},
         include=["metadatas", "distances"]
     )
-    print(f"chroma results : {results}")
     return (results["ids"][0])
 
 def delete_old_articles(user_id):
@@ -120,7 +119,6 @@ def clear_users_collection():
     ids = result["ids"]
     if ids:
         collection.delete(ids=ids)
-        print(f"Supprimé {len(ids)} entrées de la collection users")
     else:
         print("Collection users déjà vide")
 def clear_articles_collection():
@@ -129,24 +127,9 @@ def clear_articles_collection():
     ids = result["ids"]
     if ids:
         collection.delete(ids=ids)
-        print(f"Supprimé {len(ids)} entrées de la collection articles")
     else:
         print("Collection users déjà vide")
-# if __name__ == "__main__":
-    # clear_articles_collection()
-    # clear_users_collection()
-    # id=26
-    # embedding = search_user_embedding(str(id))
-    # print(embedding)
-    # collection = get_articles_collection()
 
-    # res = collection.get(limit=5)
-
-    # print(res["ids"])
-    # print(res["metadatas"])
-    # collection = get_articles_collection()
-
-    # print(collection.get(ids=["NCT06946680"]))
 
     
 

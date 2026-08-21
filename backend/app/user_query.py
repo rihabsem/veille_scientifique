@@ -164,12 +164,12 @@ def  query_generation(user_profile, user_answers):
 
   Each element must have exactly this structure:
 
-  {
+  {{
     "id": integer,
     "semantic_scholar": string,
     "pubmed": string,
     "clinical_trials": string
-  }
+  }}
 
   IMPORTANT:
   - Return exactly 5 query groups.
@@ -197,7 +197,7 @@ def user_profile_treatment(user_profile, user_id):
   
 
 
-def launch_LLM(user_profile, id_user, responses): #je dois rendre tous les réponses en liste
+def launch_LLM(user_profile, id_user, responses):
     res = query_generation(user_profile, responses)
     res = re.sub(r"```json|```", "", res).strip()
     try:
@@ -206,10 +206,10 @@ def launch_LLM(user_profile, id_user, responses): #je dois rendre tous les répo
         res = json.loads(repair_json(res))
 
     has_entries = count_queries(id_user) > 0
+    if has_entries:
+        delete_queries_by_source(id_user)
 
     for r in res:
-        if has_entries:
-          delete_queries_by_source(id_user)
         insert_query(r["semantic_scholar"], "Semantic Scholar", id_user)
         insert_query(r["pubmed"], "PubMed", id_user)
         insert_query(r["clinical_trials"], "Clinical Trials", id_user)
@@ -224,18 +224,3 @@ def csv_writer(usage, function_name):
             usage.completion_tokens,
             usage.total_tokens
         ])
-if __name__ == "__main__":
-  my_dic={}
-  user_profile = """ Interne en cardiologie, intéressée par l'insuffisance cardiaque, les biomarqueurs cardiovasculaires et les nouvelles thérapies anticoagulantes."""
-  question1 = profile_refinement(user_profile)
-  print(f"Question 1: {question1}", flush=True)
-  answer1 = input(f"")
-  my_dic[question1] = answer1
-  question2 = profile_refinement(user_profile, [answer1])
-  print(f"Question 2: {question2}", flush=True)
-  answer2 = input(f"")
-  my_dic[question2] = answer2
-  question3 = profile_refinement(user_profile, [answer1, answer2])
-  print(f"Question 3: {question3}", flush=True)
-  answer3 = input(f"")
-  my_dic[question3] = answer3

@@ -275,23 +275,25 @@ def search_status(user_id: int = Depends(get_current_user_id)):
     }
 
 @app.post("/update")
-def update_user_endpoint(data: updateRequest, user_id: int = Depends(get_current_user_id)):
+def update_user_endpoint(
+    data: updateRequest,
+    user_id: int = Depends(get_current_user_id)
+):
     user = get_user_by_id(user_id)
-    print(f"Updating user {user_id} update rate from {user.weekly_monthly} to {data.update_rate}")
     if user is None:
-        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
-
+        raise HTTPException(
+            status_code=404,
+            detail="Utilisateur introuvable"
+        )
     if user.weekly_monthly != data.update_rate:
         update_user_update_rate(user_id, data.update_rate)
-
     if user.profil != data.profile:
         update_user_profile(user_id, data.profile)
         profile_cleaned = clean_data(data.profile)
         embedding = get_embedding(profile_cleaned)
         update_user_embedding(user_id, embedding)
-
     return {"status": "ok"}
-    
+
 @app.post("/forgot-password")
 def forgot_password(data: ForgotPasswordRequest):
     user = get_user(data.email)

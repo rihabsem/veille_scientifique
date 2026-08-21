@@ -20,8 +20,6 @@ export default function UserData() {
         profile: "",
         update_rate: ""
     });
-
-    // Sauvegarde le profil initial
     const [initialProfile, setInitialProfile] = useState("");
 
     const hasFetched = useRef(false);

@@ -17,6 +17,20 @@ Une fois le profil de l'utilisateur validé, le système lui propose un ensemble
 
 Après la création du compte, une première recherche est automatiquement lancée. Par la suite, en fonction de la cadence choisie par l'utilisateur, une nouvelle recherche est effectuée chaque semaine ou chaque mois.
 
+# Fichiers env
+- Le fichier **.env_backend** doit être importer dans le dossier **backend/app** et doit être renomer **.env**
+
+- Le ficher **.env_frontend** doit être importer dans le dossier **fontend** et doit être renomer **.env**
+
+# Gestion du mail
+Il faut se connecter au compte mail qui envoie les mails:
+
+email : researchserviceerasme@gmail.com
+
+mot de passe : stageerasme2026@
+
+Il faut ajouter un numéro de téléphone dans la partie **vérification en deux étapes**
+
 # Installation
 
 Le projet est disponible sur GitHub et peut être cloné à l'aide de la commande suivante :
@@ -148,9 +162,220 @@ L'architecture considérée pour le backend est la suivante :
 
 - **`App`** : fichier responsable de la définition et de la gestion des routes publiques et privées de l’application.
 
-## Deploiement
-Le déploiement du frontend est réalisé sur le service Vercel à partir du dépôt GitHub, en utilisant uniquement le dossier `frontend`, qui contient l’ensemble du code dédié à l’interface utilisateur.
+## Déploiement
+
+Le déploiement du frontend est réalisé sur **Vercel** à partir du dépôt GitHub. Seul le dossier `frontend`, qui contient l’ensemble du code dédié à l’interface utilisateur, est utilisé pour le déploiement.
+
+### Déploiement du frontend sur Vercel
+
+1. Se rendre sur le [site de Vercel](https://vercel.com/).
+
+2. Créer un compte ou se connecter à un compte existant.
+
+3. Cliquer sur **Add New** → **Project**.
+
+4. Connecter le compte **GitHub** contenant le projet.
+
+5. Sélectionner le dépôt correspondant au projet.
+
+6. Dans la configuration du projet, sélectionner le dossier `frontend` comme **Root Directory**.
+
+7. Configurer les paramètres de build nécessaires au projet, puis lancer le déploiement.
+
+8. Une fois le déploiement terminé, Vercel génère une **URL publique** correspondant au frontend.
+
+### Configuration du backend
+
+Une fois l'URL du frontend générée, elle doit être ajoutée dans la configuration **CORS** du backend afin d'autoriser les requêtes provenant du frontend déployé.
+
+Dans le fichier `backend/main.py`, modifier la variable `allow_origins` :
+
+```python
+allow_origins=[
+    "https://veille-scientifique.vercel.app",
+    "http://localhost:5173",
+]
+```
 
 ## Mise à jour
 
 Pour que le serveur prenne en compte les modifications réalisées, il est nécessaire d’effectuer un `git push` vers le dépôt GitHub. Le serveur récupère ensuite les dernières modifications afin de mettre à jour l’application.
+
+# Ajout d'une nouvelle base de données
+
+Pour intégrer une nouvelle source de données à l'application, plusieurs modifications doivent être effectuées afin de respecter le flux de traitement existant.
+
+### 1. Modification du fichier `api_logic`
+
+Dans un premier temps, il faut ajouter une **variable globale** correspondant à la nouvelle base de données ou à son API.
+
+Ensuite, ajouter deux nouvelles fonctions :
+
+1. **Fonction d'appel à l'API**
+   - Effectuer l'appel à la nouvelle source de données.
+   - Récupérer les données brutes retournées par l'API.
+
+2. **Fonction de traitement des données**
+   - Récupérer les informations nécessaires, notamment le **titre** et l'**abstract**.
+   - Nettoyer et prétraiter les données.
+   - Générer les **embeddings** à partir des données nettoyées.
+   - Insérer les données traitées dans les deux bases de données :
+     - la **base de données relationnelle** ;
+     - la **base de données vectorielle**.
+
+Le flux dans `api_logic` est donc :
+
+**Appel API → Récupération des données → Extraction du titre et de l'abstract → Nettoyage → Génération des embeddings → Insertion dans la BDD relationnelle et la BDD vectorielle**
+
+### 2. Modification du fichier `coord.py`
+
+Une fois les nouvelles fonctions ajoutées dans `api_logic`, il faut les intégrer au processus principal de l'application.
+
+Pour cela, modifier la fonction `process_user` dans `coord.py` en ajoutant une **condition spécifique à la nouvelle base de données**.
+
+À l'intérieur de cette condition :
+
+1. Appeler la fonction permettant de récupérer les données depuis la nouvelle API.
+2. Transmettre les données récupérées à la fonction de traitement.
+3. La fonction de traitement effectue ensuite l'extraction, le nettoyage, la génération des embeddings et l'insertion dans les deux bases de données.
+
+Le flux dans `process_user` devient donc :
+
+**`process_user` → Condition nouvelle base → Fonction d'appel API → Fonction de traitement**
+
+### 3. Flux global
+
+L'ajout d'une nouvelle base de données suit ainsi le flux suivant :
+
+```text
+                         process_user()
+                              │
+                              ▼
+                    Nouvelle base de données ?
+                         │           │
+                        Oui          Non
+                         │           │
+                         ▼           ▼
+                 Appel de l'API   Autres traitements
+                         │
+                         ▼
+                Récupération des données
+                         │
+                         ▼
+             Extraction titre + abstract
+                         │
+                         ▼
+                  Nettoyage des données
+                         │
+                         ▼
+                Génération des embeddings
+                         │
+                         ├───────────────┐
+                         ▼               ▼
+               BDD relationnelle   BDD vectorielle
+```
+
+# Changer l'adresse e-mail d'envoi
+
+Pour modifier l'adresse e-mail utilisée par l'application pour envoyer les messages, il faut mettre à jour la variable `EMAIL_ADDRESS` dans le fichier `email_service`.
+
+## 1. Modifier l'adresse e-mail
+
+Dans le fichier `email_service`, remplacer la valeur de la variable `EMAIL_ADDRESS` par la nouvelle adresse e-mail d'envoi.
+
+## 2. Générer une clé d'accès avec Gmail
+
+Si l'adresse utilisée est un compte **Gmail**, il faut au préalable activer la **vérification en deux étapes** sur le compte Google.
+
+Ensuite :
+
+1. Se rendre sur la page [Clés d'accès Google](https://myaccount.google.com/signinoptions/passkeys).
+2. Se connecter avec le compte Gmail concerné.
+3. Cliquer sur **Créer une clé d'accès**.
+4. Suivre les instructions affichées et valider avec le **verrouillage de votre appareil** (code, empreinte digitale ou reconnaissance faciale selon l'appareil).
+
+La clé d'accès permet de sécuriser l'accès au compte et doit être configurée avant de pouvoir utiliser la nouvelle adresse d'envoi dans l'application.
+
+## 3. Vérifier la configuration
+
+Une fois l'adresse modifiée et la configuration Gmail terminée, vérifier que :
+
+- `EMAIL_ADDRESS` contient la nouvelle adresse ;
+- la vérification en deux étapes est activée sur le compte Google ;
+- la clé d'accès a bien été créée ;
+- les paramètres d'authentification nécessaires à l'envoi des e-mails sont correctement configurés.
+
+> **Attention :** ne jamais enregistrer un mot de passe, une clé d'accès ou une autre information d'authentification directement dans le code ou dans un dépôt Git. Utiliser les variables d'environnement ou le système de gestion des secrets prévu par l'application, modifier la clé dans le .env dans la variable EMAIL_PASSKEY
+
+# Changer le LLM utiliser
+
+Dans le fichier .env il faut changer la variable **MISTRAL_KEY** et changer dans les fichiers `user_query.py` et `email_service.py` la logique d'appel a cette LLM
+
+# Les erreurs fréquente
+
+- Erreur HTTP 429 de Mistral quand la capacité du servuce des dépassée dans ce cas il faut attendre que le service renprend encore une fois
+- Les commandes git doivent être réaliser a l'intérieur du dossier **veille_scientifique**
+
+# Déploiement de l'application sur une autre plateforme
+
+L'application est conteneurisée avec **Docker**, ce qui permet de la déployer sur différentes infrastructures sans modifier fondamentalement l'application.
+
+Actuellement, l'application est déployée sur **Google Cloud**. Cependant, il est possible de la déployer sur une autre infrastructure prenant en charge Docker.
+
+## Architecture du déploiement
+
+L'application est exécutée dans un conteneur Docker. Les éléments nécessaires au fonctionnement de l'application sont définis dans les fichiers Docker et `docker-compose`.
+
+Le déploiement repose donc principalement sur :
+
+- l'image Docker de l'application ;
+- les variables d'environnement nécessaires à la configuration ;
+- les services externes utilisés par l'application (base de données, API, etc.) ;
+- les volumes nécessaires à la persistance des données, le cas échéant ;
+- la configuration réseau et les ports exposés.
+
+## Déployer sur une autre infrastructure
+
+Si l'application doit être déplacée de Google Cloud vers une autre plateforme, il n'est normalement pas nécessaire de modifier le code de l'application. Il suffit de choisir une infrastructure compatible avec Docker et de reproduire la configuration nécessaire à son fonctionnement.
+
+Le processus général est le suivant :
+
+1. **Construire l'image Docker**
+
+   Construire l'image de l'application à partir du `Dockerfile`.
+
+2. **Transférer l'image**
+
+   L'image Docker peut être envoyée vers un registre d'images (Docker Registry) accessible depuis la nouvelle infrastructure.
+
+3. **Configurer les variables d'environnement**
+
+   Reproduire les variables d'environnement utilisées par l'application, notamment celles nécessaires à la connexion aux bases de données, aux APIs et aux services externes.
+
+4. **Configurer les services nécessaires**
+
+   La nouvelle infrastructure doit fournir ou héberger les services utilisés par l'application, par exemple :
+
+   - base de données relationnelle ;
+   - base de données vectorielle ;
+   - services ou APIs externes ;
+   - stockage persistant si nécessaire.
+
+5. **Lancer le conteneur**
+
+   Lancer l'image Docker sur la nouvelle infrastructure en configurant les ports, les variables d'environnement, les volumes et le réseau nécessaires.
+
+6. **Configurer l'accès à l'application**
+
+   Si l'application doit être accessible depuis Internet, configurer le domaine, le reverse proxy et/ou HTTPS selon l'infrastructure utilisée.
+
+7. **Changer le endpoint pour faire l'appel du frontend au backend**
+  Changer l'URL final du backend dans le fichier **fontend/api.js**
+
+## Exemple avec Docker Compose
+
+Si le projet utilise `docker-compose`, le fichier `docker-compose.yml` peut être utilisé comme base pour reproduire l'environnement de l'application sur une autre infrastructure.
+
+```bash
+docker compose up -d
+
