@@ -33,7 +33,11 @@ async def lifespan(app: FastAPI):
     print("Starting scheduler...", flush=True)
     scheduler.add_job(
         run_batch,
-        trigger=IntervalTrigger(minutes=2),
+        trigger=CronTrigger(
+        hour=10,
+        minute=10,
+        timezone="Europe/Brussels"
+    ),
         id="daily_coordinateur",
         replace_existing=True
     )
